@@ -6,6 +6,7 @@ import { Navbar } from "@/components/navbar";
 import { Sidebar } from "@/components/sidebar";
 import { FloatingActionButton } from "@/components/fab";
 import { PageTransition } from "@/components/page-transition";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -58,6 +59,7 @@ export default function RootLayout({
           {children}
           <Toaster richColors position="top-right" />
         </Providers>
+        <SpeedInsights />
       </body>
     </html>
   );
