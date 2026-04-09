@@ -45,8 +45,10 @@ export default async function DashboardPage() {
   // Helper cho server-side conversion
   const convertServer = (amount: number, from: Currency, to: Currency) => {
     if (from === to) return amount;
-    const amountInVND = from === "VND" ? amount : amount / rates[from];
-    return to === "VND" ? amountInVND : amountInVND * rates[to];
+    // Cast rates to any to allow dynamic indexing with Currency strings
+    const ratesMap = rates as any;
+    const amountInVND = from === "VND" ? amount : amount / ratesMap[from];
+    return to === "VND" ? amountInVND : amountInVND * ratesMap[to];
   };
 
 
@@ -233,8 +235,8 @@ export default async function DashboardPage() {
                             />
                           </div>
                           <div className="flex justify-between text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">
-                            <span>Đã tích lũy {formatCurrencyCompact(convertServer(goal.currentAmount, "VND", preferredCurrency), preferredCurrency)}</span>
-                            <span>Mục tiêu {formatCurrencyCompact(convertServer(goal.targetAmount, "VND", preferredCurrency), preferredCurrency)}</span>
+                            <span>Đã tích lũy {formatCurrencyCompact(convertServer(goal.currentAmount, "VND", preferredCurrency))}</span>
+                            <span>Mục tiêu {formatCurrencyCompact(convertServer(goal.targetAmount, "VND", preferredCurrency))}</span>
                           </div>
                         </div>
                       ))
