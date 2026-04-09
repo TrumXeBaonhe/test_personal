@@ -28,6 +28,7 @@ interface TransactionMapProps {
 
 export function TransactionMap({ transactions }: TransactionMapProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const { formatPrice, currency } = useCurrency();
 
   useEffect(() => {
     setIsMounted(true);

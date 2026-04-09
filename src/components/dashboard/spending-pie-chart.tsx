@@ -34,7 +34,7 @@ export function SpendingPieChart({ data }: SpendingPieChartProps) {
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
                 <Pie
-                  data={data}
+                  data={convertedData}
                   cx="50%"
                   cy="45%"
                   innerRadius={70}

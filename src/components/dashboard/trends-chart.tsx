@@ -29,7 +29,7 @@ export function TrendsChart({ data }: TrendsChartProps) {
     <div className="h-[400px] w-full mt-4">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
-          data={data}
+          data={convertedData}
           margin={{
             top: 10,
             right: 30,
