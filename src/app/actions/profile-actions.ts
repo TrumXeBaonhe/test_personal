@@ -78,4 +78,3 @@ export async function updatePassword(data: z.infer<typeof passwordSchema>): Prom
     return actionError(error);
   }
 }
-}
