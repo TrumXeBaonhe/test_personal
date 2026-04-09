@@ -5,7 +5,7 @@ import { DebtLoanList } from '@/components/debt-loan/debt-loan-list';
 import { DebtLoanForm } from '@/components/debt-loan/debt-loan-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { formatCurrency } from '@/lib/utils';
+import { CurrencyDisplay } from '@/components/currency-display';
 import { ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 
 export const metadata: Metadata = {

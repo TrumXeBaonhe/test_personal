@@ -13,7 +13,7 @@ import { ArrowLeftRight, Filter, MapPin } from "lucide-react";
 import { DeleteTransactionButton } from "@/components/delete-transaction-button";
 import { TransactionFilters } from "@/components/transaction-filters";
 import { PaginationNav } from "@/components/pagination-nav";
-import { formatCurrency } from "@/lib/utils";
+import { CurrencyDisplay } from "@/components/currency-display";
 import type { Transaction, Wallet, Category } from "@prisma/client";
 import { FadeIn } from "@/components/fade-in";
 import { ExportButton } from "@/components/transactions/export-button";

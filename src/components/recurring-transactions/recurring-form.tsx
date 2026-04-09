@@ -26,6 +26,7 @@ import { createRecurringTransaction } from "@/app/actions/recurring-actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { useCurrency } from "@/components/currency-provider";
 
 const createRecurringSchema = z.object({
   type: z.enum(["INCOME", "EXPENSE", "TRANSFER"]),
@@ -134,7 +135,7 @@ export function RecurringForm({ wallets, categories }: RecurringFormProps) {
                   name="amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Số tiền</FormLabel>
+                      <FormLabel>Số tiền ({currentCurrency})</FormLabel>
                       <FormControl>
                           <Input type="number" placeholder="0" {...field} />
                       </FormControl>

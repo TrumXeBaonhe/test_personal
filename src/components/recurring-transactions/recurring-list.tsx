@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { PauseCircle, PlayCircle, Trash2, Repeat, Loader2 } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+import { CurrencyDisplay } from "@/components/currency-display";
 
 type RecurringWithRelations = Omit<RecurringTransaction, 'amount'> & {
   amount: number;

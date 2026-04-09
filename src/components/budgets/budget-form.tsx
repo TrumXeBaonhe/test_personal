@@ -26,10 +26,11 @@ import { upsertBudget } from "@/app/actions/budget-actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { startOfMonth } from "date-fns";
+import { useCurrency } from "@/components/currency-provider";
 
 const budgetSchema = z.object({
   categoryId: z.string().min(1, "Vui lòng chọn danh mục"),
-  limitAmount: z.coerce.number().min(1000, "Hạn mức tối thiểu là 1.000đ"),
+  limitAmount: z.coerce.number().min(0.01, "Hạn mức tối thiểu là 0.01"),
 });
 
 type BudgetFormValues = z.infer<typeof budgetSchema>;
@@ -117,7 +118,7 @@ export function BudgetForm({ categories }: BudgetFormProps) {
               name="limitAmount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hạn mức tối đa (VND)</FormLabel>
+                  <FormLabel>Hạn mức tối đa ({currentCurrency})</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
@@ -126,7 +127,9 @@ export function BudgetForm({ categories }: BudgetFormProps) {
                         className="pr-10 font-mono"
                         {...field}
                       />
-                      <span className="absolute right-3 top-2.5 text-muted-foreground text-sm">₫</span>
+                      <span className="absolute right-3 top-2.5 text-muted-foreground text-sm">
+                        {currentCurrency === 'VND' ? '₫' : currentCurrency === 'USD' ? '$' : '€'}
+                      </span>
                     </div>
                   </FormControl>
                   <FormMessage />

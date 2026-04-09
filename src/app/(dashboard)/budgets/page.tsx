@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { formatCurrency } from "@/lib/utils";
 import { FadeIn } from "@/components/fade-in";
+import { CurrencyDisplay } from "@/components/currency-display";
 
 export default async function BudgetsPage() {
   const authSession = await auth();
@@ -80,7 +81,7 @@ export default async function BudgetsPage() {
                           {budget.category?.name}
                         </CardTitle>
                         <CardDescription className="flex items-center gap-1.5 font-medium">
-                          Hạn mức: <span className="text-foreground font-bold">{formatCurrency(budget.limitAmount)}</span>
+                          Hạn mức: <span className="text-foreground font-bold"><CurrencyDisplay amount={Number(budget.limitAmount)} /></span>
                         </CardDescription>
                       </div>
                       <div className="flex items-center gap-2">

@@ -1,7 +1,7 @@
 "use client";
 
 import { DebtLoan, Transaction, Wallet } from "@prisma/client";
-import { formatCurrency } from "@/lib/utils";
+import { CurrencyDisplay } from "@/components/currency-display";
 import { format } from "date-fns";
 import { 
   Calendar, 
@@ -117,7 +117,7 @@ export function DebtLoanList({ items }: DebtLoanListProps) {
                     </DropdownMenu>
                 </div>
               </div>
-              <CardTitle className="mt-2 text-xl">{formatCurrency(Number(item.amount))}</CardTitle>
+              <CardTitle className="mt-2 text-xl"><CurrencyDisplay amount={Number(item.amount)} /></CardTitle>
               <CardDescription className="flex items-center gap-1">
                 <User className="h-3 w-3" />
                 {item.personName}

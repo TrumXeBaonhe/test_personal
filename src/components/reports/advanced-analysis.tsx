@@ -83,7 +83,7 @@ export function AdvancedAnalysis({ stats }: AdvancedAnalysisProps) {
         <CardContent className="space-y-6">
            <div className="p-6 bg-background/50 rounded-3xl border border-primary/10 text-center relative overflow-hidden group-hover:scale-105 transition-transform">
               <p className="text-xs text-muted-foreground font-black uppercase tracking-widest mb-2">Số tiền dự báo tháng tới</p>
-              <h3 className="text-3xl font-black text-primary tracking-tight">{formatCurrency(forecast)}</h3>
+              <h3 className="text-3xl font-black text-primary tracking-tight"><CurrencyDisplay amount={forecast} /></h3>
               <div className="absolute -right-2 -bottom-2 opacity-10 group-hover:rotate-12 transition-transform">
                 <Target size={80} />
               </div>

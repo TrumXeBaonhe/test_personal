@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
+import { CurrencyDisplay } from "@/components/currency-display";
 import prisma from "@/lib/prisma";
-import { formatCurrency } from "@/lib/utils";
 import { Wallet, CreditCard, TrendingUp, TrendingDown } from "lucide-react";
 import { getDashboardStats } from "@/app/actions/dashboard-actions";
 import { FadeIn } from "@/components/fade-in";
@@ -31,7 +31,7 @@ export async function OverviewSection() {
             <Wallet size={120} />
           </div>
           <p className="text-emerald-100/80 text-sm font-semibold uppercase tracking-wider mb-2">Tổng tài sản thực tế</p>
-          <h3 className="text-3xl font-black mb-4 tracking-tight">{formatCurrency(totalBalance)}</h3>
+          <h3 className="text-3xl font-black mb-4 tracking-tight"><CurrencyDisplay amount={totalBalance} /></h3>
           <div className="flex items-center gap-2 text-xs text-emerald-100/60 bg-white/10 w-fit px-3 py-1 rounded-full backdrop-blur-md">
             <Wallet size={12} />
             <span>{walletCount} ví đang hoạt động</span>

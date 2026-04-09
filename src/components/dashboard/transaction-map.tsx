@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { MapPin, Navigation } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
+import { useCurrency } from "@/components/currency-provider";
 
 // Load actual Leaflet parts dynamically
 const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), { ssr: false });
@@ -86,7 +86,7 @@ export function TransactionMap({ transactions }: TransactionMapProps) {
                 <div className="p-1">
                   <p className="font-bold text-sm border-b pb-1 mb-1">{t.category?.name || "Giao dịch"}</p>
                   <p className={`text-xs font-semibold ${t.type === 'EXPENSE' ? 'text-red-500' : 'text-emerald-500'}`}>
-                    {t.type === 'EXPENSE' ? '-' : '+'}{formatCurrency(Number(t.amount))}
+                    {t.type === 'EXPENSE' ? '-' : '+'}{formatPrice(Number(t.amount), currency)}
                   </p>
                   <p className="text-[10px] text-muted-foreground mt-1 italic">{t.locationName}</p>
                 </div>

@@ -40,6 +40,7 @@ const WALLET_ICONS = [
 import { FadeIn } from "@/components/fade-in";
 
 export default function WalletsPage() {
+  const { convert, currency: currentCurrency } = useCurrency();
   const [wallets, setWallets] = useState<WalletItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -269,7 +270,7 @@ export default function WalletsPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold tracking-tight text-foreground">
-                  {formatCurrency(wallet.balance)}
+                  <CurrencyDisplay amount={wallet.balance} />
                 </div>
               </CardContent>
               <CardFooter className="pt-0 pb-4">

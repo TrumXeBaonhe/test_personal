@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { formatCurrency } from "@/lib/utils";
+import { CurrencyDisplay } from "@/components/currency-display";
 import { Wallet, PlusCircle, TrendingUp, TrendingDown } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";

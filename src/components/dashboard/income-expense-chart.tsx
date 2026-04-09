@@ -11,7 +11,7 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
+import { useCurrency } from "@/components/currency-provider";
 
 interface IncomeVsExpenseChartProps {
   data: {
@@ -22,6 +22,14 @@ interface IncomeVsExpenseChartProps {
 }
 
 export function IncomeVsExpenseChart({ data }: IncomeVsExpenseChartProps) {
+  const { convert, formatPrice, currency: currentCurrency } = useCurrency();
+
+  const convertedData = data.map(d => ({
+    ...d,
+    income: convert(d.income, "VND", currentCurrency),
+    expense: convert(d.expense, "VND", currentCurrency),
+  }));
+
   return (
     <Card className="flex flex-col h-full border-none shadow-none">
       <CardHeader className="pb-0">
@@ -34,7 +42,7 @@ export function IncomeVsExpenseChart({ data }: IncomeVsExpenseChartProps) {
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <BarChart data={convertedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
               <XAxis
                 dataKey="date"
@@ -46,11 +54,11 @@ export function IncomeVsExpenseChart({ data }: IncomeVsExpenseChartProps) {
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                tickFormatter={(val) => formatCurrencyCompact(val)}
+                tickFormatter={(val) => formatPrice(val, currentCurrency)}
                 tick={{ fontSize: 10 }}
               />
               <Tooltip
-                formatter={(value: string | number | undefined | readonly (string | number)[]) => [formatCurrency(Number(value || 0)), ""]}
+                formatter={(value: any) => [formatPrice(Number(value || 0), currentCurrency), ""]}
                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
               />
               <Legend verticalAlign="top" align="right" height={36} iconType="circle" />

@@ -10,12 +10,21 @@ import {
   ResponsiveContainer,
   Legend
 } from 'recharts';
-import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
+import { formatCurrencyCompact } from "@/lib/utils";
+import { useCurrency } from "@/components/currency-provider";
 interface TrendsChartProps {
   data: { label: string; income: number; expense: number }[];
 }
 
 export function TrendsChart({ data }: TrendsChartProps) {
+  const { convert, formatPrice, currency: currentCurrency } = useCurrency();
+
+  const convertedData = data.map(d => ({
+    ...d,
+    income: convert(d.income, "VND", currentCurrency),
+    expense: convert(d.expense, "VND", currentCurrency),
+  }));
+
   return (
     <div className="h-[400px] w-full mt-4">
       <ResponsiveContainer width="100%" height="100%">
@@ -50,7 +59,7 @@ export function TrendsChart({ data }: TrendsChartProps) {
             axisLine={false}
             tickLine={false}
             tick={{ fill: '#64748b', fontSize: 10 }}
-            tickFormatter={(value) => formatCurrencyCompact(value)}
+            tickFormatter={(value) => formatPrice(value, currentCurrency)}
           />
           <Tooltip
             contentStyle={{
@@ -60,7 +69,7 @@ export function TrendsChart({ data }: TrendsChartProps) {
               boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
               backdropFilter: 'blur(8px)'
             }}
-            formatter={(value: string | number | undefined | readonly (string | number)[]) => [formatCurrency(Number(value || 0)), ""]}
+            formatter={(value: any) => [formatPrice(Number(value || 0), currentCurrency), ""]}
           />
           <Legend verticalAlign="top" height={36} />
           <Area

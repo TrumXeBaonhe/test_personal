@@ -76,8 +76,11 @@ type Wallet = {
 };
 
 import { FadeIn } from "@/components/fade-in";
+import { useCurrency } from "@/components/currency-provider";
+import { CurrencyDisplay } from "@/components/currency-display";
 
 export default function SavingGoalsPage() {
+  const { convert, currency: currentCurrency } = useCurrency();
   const [goals, setGoals] = useState<SavingGoal[]>([]);
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -145,7 +148,7 @@ export default function SavingGoalsPage() {
 
     const data = {
       name: goalName,
-      targetAmount: parseFloat(targetAmount),
+      targetAmount: convert(parseFloat(targetAmount), currentCurrency, "VND"),
       deadlineDate: new Date(deadline),
       currentAmount: editingGoal ? Number(editingGoal.currentAmount) : 0,
       isRoundUp: isRoundUp,
@@ -196,10 +199,6 @@ export default function SavingGoalsPage() {
     } else {
       toast.error(result.error);
     }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount);
   };
 
   const calculateProgress = (current: number | { toString(): string }, target: number | { toString(): string }) => {
@@ -387,11 +386,11 @@ export default function SavingGoalsPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <p className="text-[10px] uppercase text-muted-foreground font-medium">Đã có</p>
-                      <p className="text-sm font-semibold text-primary">{formatCurrency(Number(goal.currentAmount))}</p>
+                      <p className="text-sm font-semibold text-primary"><CurrencyDisplay amount={Number(goal.currentAmount)} /></p>
                     </div>
                     <div className="space-y-1 text-right">
                       <p className="text-[10px] uppercase text-muted-foreground font-medium">Mục tiêu</p>
-                      <p className="text-sm font-semibold">{formatCurrency(Number(goal.targetAmount))}</p>
+                      <p className="text-sm font-semibold"><CurrencyDisplay amount={Number(goal.targetAmount)} /></p>
                     </div>
                   </div>
                 </CardContent>
