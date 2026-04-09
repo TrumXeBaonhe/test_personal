@@ -75,7 +75,7 @@ npx prisma db push
 ```bash
 npm run dev
 ```
-Truy cập: [http://localhost:3000](http://localhost:3000)
+Truy cập ứng dụng tại địa chỉ dev hoặc production của bạn.
 
 ---
 

@@ -20,11 +20,6 @@ const nextConfig = {
   reactStrictMode: false,
   devIndicators: false,
   turbopack: {},
-  allowedDevOrigins: [
-    '192.168.100.179', 
-    '8t7gsp-ip-42-112-70-41.tunnelmole.net',
-    'localhost:3000'
-  ],
 };
 
 module.exports = withPWA(nextConfig);
