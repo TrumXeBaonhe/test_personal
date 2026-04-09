@@ -43,6 +43,7 @@ export function BudgetForm({ categories }: BudgetFormProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { convert, currency: currentCurrency } = useCurrency();
 
   const form = useForm<BudgetFormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -58,9 +59,13 @@ export function BudgetForm({ categories }: BudgetFormProps) {
     try {
       // Mặc định thiết lập cho tháng hiện tại
       const monthYear = startOfMonth(new Date());
+
+      // Convert input amount (in current currency) back to VND base for storage
+      const amountInVND = convert(values.limitAmount, currentCurrency, "VND");
+
       const result = await upsertBudget({
         categoryId: values.categoryId,
-        limitAmount: values.limitAmount,
+        limitAmount: amountInVND,
         monthYear,
       });
 

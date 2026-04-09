@@ -21,7 +21,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { getFormOptions } from "@/app/actions/transaction-actions";
-import { formatCurrency } from "@/lib/utils";
+import { useCurrency } from "@/components/currency-provider";
+import { CurrencyDisplay } from "@/components/currency-display";
 
 type WalletItem = {
   id: string;
