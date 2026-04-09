@@ -13,6 +13,8 @@ import { AIAdvisor } from "@/components/dashboard/ai-advisor";
 import { TransactionMap, MapTransaction } from "@/components/dashboard/transaction-map";
 import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 import { getTransactionLocations } from "@/app/actions/transaction-actions";
+import { getExchangeRates, ExchangeRates } from "@/app/actions/exchange-actions";
+import { Currency } from "@/components/currency-provider";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -26,19 +28,26 @@ export default async function DashboardPage() {
     getDashboardStats(),
     prisma.user.findUnique({ where: { id: userId } }),
     getTransactionLocations(),
+    getExchangeRates(),
   ]);
 
-  // Serialize Decimal → number để tránh lỗi khi truyền sang Client Components
-  const wallets = rawWallets.map((w) => ({ ...w, balance: Number(w.balance) }));
-  const serializedSavingGoals = savingGoals.map((g) => ({
-    ...g,
-    targetAmount: Number(g.targetAmount),
-    currentAmount: Number(g.currentAmount),
-  }));
+  const preferredCurrency = (dbUser?.preferredCurrency || "VND") as Currency;
+  const rates = exchangeRatesData as ExchangeRates;
+
+  // Helper cho server-side conversion
+  const convertServer = (amount: number, from: Currency, to: Currency) => {
+    if (from === to) return amount;
+    const amountInVND = from === "VND" ? amount : amount / rates[from];
+    return to === "VND" ? amountInVND : amountInVND * rates[to];
+  };
 
 
-  // Tính tổng số dư của tất cả các ví
-  const totalBalance = wallets.reduce((acc, wallet) => acc + Number(wallet.balance), 0);
+  // Tính tổng số dư của tất cả các ví (VND)
+  const totalBalanceVND = wallets.reduce((acc, wallet) => acc + Number(wallet.balance), 0);
+  const totalBalanceDisplay = convertServer(totalBalanceVND, "VND", preferredCurrency);
+  
+  const currentExpVND = stats.momStats.currentExpTotal || 0;
+  const currentExpDisplay = convertServer(currentExpVND, "VND", preferredCurrency);
 
   const walletCount = wallets.length;
   const categoryCount = categories.length;
@@ -110,7 +119,7 @@ export default async function DashboardPage() {
                   <Wallet size={120} />
                 </div>
                 <p className="text-emerald-100/80 text-sm font-semibold uppercase tracking-wider mb-2">Tổng tài sản thực tế</p>
-                <h3 className="text-3xl font-black mb-4 tracking-tight">{formatCurrency(totalBalance)}</h3>
+                <h3 className="text-3xl font-black mb-4 tracking-tight">{formatCurrency(totalBalanceDisplay, preferredCurrency)}</h3>
                 <div className="flex items-center gap-2 text-xs text-emerald-100/60 bg-white/10 w-fit px-3 py-1 rounded-full backdrop-blur-md">
                   <Wallet size={12} />
                   <span>{walletCount} ví đang hoạt động</span>
@@ -140,7 +149,7 @@ export default async function DashboardPage() {
                     <span className="text-xs font-bold text-rose-500/70 uppercase">Chi tiêu tháng</span>
                  </div>
                  <p className="text-muted-foreground text-sm font-medium mb-1">Tháng hiện tại</p>
-                 <h3 className="text-3xl font-extrabold text-rose-500">{formatCurrency(stats.momStats.currentExpTotal || 0)}</h3>
+                 <h3 className="text-3xl font-extrabold text-rose-500">{formatCurrency(currentExpDisplay, preferredCurrency)}</h3>
                  <div className={`mt-2 flex items-center gap-1 text-xs font-bold ${stats.momStats.expDiffPercent >= 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
                     {stats.momStats.expDiffPercent >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                     {Math.abs(stats.momStats.expDiffPercent)}% so với tháng trước
@@ -216,8 +225,8 @@ export default async function DashboardPage() {
                             />
                           </div>
                           <div className="flex justify-between text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">
-                            <span>Đã tích lũy {formatCurrencyCompact(goal.currentAmount)}</span>
-                            <span>Mục tiêu {formatCurrencyCompact(goal.targetAmount)}</span>
+                            <span>Đã tích lũy {formatCurrencyCompact(convertServer(goal.currentAmount, "VND", preferredCurrency), preferredCurrency)}</span>
+                            <span>Mục tiêu {formatCurrencyCompact(convertServer(goal.targetAmount, "VND", preferredCurrency), preferredCurrency)}</span>
                           </div>
                         </div>
                       ))
@@ -264,7 +273,7 @@ export default async function DashboardPage() {
                             <p className="text-[10px] text-muted-foreground uppercase font-medium">Hoạt động</p>
                           </div>
                           <div className="text-right">
-                             <p className="text-sm font-black text-primary">{formatCurrency(Number(wallet.balance))}</p>
+                             <p className="text-sm font-black text-primary">{formatCurrency(convertServer(Number(wallet.balance), "VND", preferredCurrency), preferredCurrency)}</p>
                              <div className="h-1 w-12 bg-primary/20 rounded-full ml-auto mt-1" />
                           </div>
                         </div>

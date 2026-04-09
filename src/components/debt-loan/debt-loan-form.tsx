@@ -8,6 +8,7 @@ import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { useCurrency } from "@/components/currency-provider";
 import {
   Dialog,
   DialogContent,
@@ -44,6 +45,7 @@ interface DebtLoanFormProps {
 }
 
 export function DebtLoanForm({ wallets }: DebtLoanFormProps) {
+  const { convert, currency: currentCurrency } = useCurrency();
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -66,6 +68,7 @@ export function DebtLoanForm({ wallets }: DebtLoanFormProps) {
     try {
       const result = await createDebtLoan({
         ...values,
+        amount: convert(values.amount, currentCurrency, "VND"),
         startDate: new Date(values.startDate),
         dueDate: values.dueDate ? new Date(values.dueDate) : undefined,
       });

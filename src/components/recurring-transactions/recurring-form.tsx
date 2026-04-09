@@ -48,6 +48,7 @@ interface RecurringFormProps {
 }
 
 export function RecurringForm({ wallets, categories }: RecurringFormProps) {
+  const { convert, currency: currentCurrency } = useCurrency();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -75,6 +76,7 @@ export function RecurringForm({ wallets, categories }: RecurringFormProps) {
     try {
       const result = await createRecurringTransaction({
         ...values,
+        amount: convert(values.amount, currentCurrency, "VND"),
         categoryId: values.type === "TRANSFER" ? null : values.categoryId,
         toWalletId: values.type === "TRANSFER" ? values.toWalletId : null,
         startDate: new Date(values.startDate),

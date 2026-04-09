@@ -2,7 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { TrendingUp, ArrowUpRight, ArrowDownRight, Target, Info } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+import { useCurrency } from "@/components/currency-provider";
+import { CurrencyDisplay } from "@/components/currency-display";
 
 interface AdvancedAnalysisProps {
   stats: {
@@ -13,6 +14,7 @@ interface AdvancedAnalysisProps {
 }
 
 export function AdvancedAnalysis({ stats }: AdvancedAnalysisProps) {
+  const { formatPrice } = useCurrency();
   const { currentExpTotal, lastExpTotal, expDiffPercent } = stats;
   const isUp = expDiffPercent >= 0;
 
@@ -46,7 +48,7 @@ export function AdvancedAnalysis({ stats }: AdvancedAnalysisProps) {
            <div className="space-y-3">
               <div className="flex justify-between text-xs font-bold uppercase tracking-tighter">
                 <span className="text-muted-foreground">Tháng {new Date().getMonth() || 12}</span>
-                <span>{formatCurrency(lastExpTotal)}</span>
+                <span>{formatPrice(lastExpTotal)}</span>
               </div>
               <div className="h-2 w-full bg-muted rounded-full overflow-hidden shadow-inner flex">
                  <div 
@@ -57,7 +59,7 @@ export function AdvancedAnalysis({ stats }: AdvancedAnalysisProps) {
               
               <div className="flex justify-between text-xs font-black uppercase tracking-tighter mt-4">
                 <span className="text-primary">Tháng Hiện Tại</span>
-                <span className="text-primary">{formatCurrency(currentExpTotal)}</span>
+                <span className="text-primary">{formatPrice(currentExpTotal)}</span>
               </div>
               <div className="h-3 w-full bg-muted rounded-full overflow-hidden shadow-inner flex">
                  <div 

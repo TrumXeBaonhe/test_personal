@@ -134,7 +134,7 @@ export default function SavingGoalsPage() {
   const handleOpenEdit = (goal: SavingGoal) => {
     setEditingGoal(goal);
     setGoalName(goal.name);
-    setTargetAmount(Number(goal.targetAmount).toString());
+    setTargetAmount(convert(Number(goal.targetAmount), "VND", currentCurrency).toString());
     setDeadline(format(new Date(goal.deadlineDate), "yyyy-MM-dd"));
     setIsRoundUp(!!goal.isRoundUp);
     setIsGoalDialogOpen(true);
@@ -187,7 +187,8 @@ export default function SavingGoalsPage() {
       return toast.error("Vui lòng chọn ví và nhập số tiền");
     }
 
-    const amount = parseFloat(contributionAmount);
+    const rawAmount = parseFloat(contributionAmount);
+    const amount = convert(rawAmount, currentCurrency, "VND");
     const result = await addContribution(activeGoalId, selectedWalletId, amount);
 
     if (result.success) {
@@ -248,7 +249,7 @@ export default function SavingGoalsPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="target-amount">Số tiền cần tiết kiệm (VND)</Label>
+                  <Label htmlFor="target-amount">Số tiền cần tiết kiệm ({currentCurrency})</Label>
                   <Input 
                     id="target-amount" 
                     type="number" 
