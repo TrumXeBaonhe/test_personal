@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { TagSelector } from "./tag-selector";
 import { LocationInput } from "./location-input";
 import { ReceiptScanner } from "./receipt-scanner";
+import { useCurrency } from "@/components/currency-provider";
 
 interface Tag {
   id: string;
@@ -49,7 +50,7 @@ const transactionBaseSchema = z.object({
   longitude: z.number().optional(),
 });
 
-// Cách tiếp cận tốt hơn — dùng superRefine (1 lần, không chain):
+// Way to use superRefine correctly
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const transactionSchema: z.ZodType<TransactionFormValues, any, any> = transactionBaseSchema.superRefine((data, ctx) => {
   if (data.type === "TRANSFER") {
@@ -100,6 +101,7 @@ interface TransactionFormValues {
 }
 
 export function FloatingActionButton() {
+  const { convert, currency: currentCurrency } = useCurrency();
   const [open, setOpen] = useState(false);
   const [wallets, setWallets] = useState<OptionType[]>([]);
   const [categories, setCategories] = useState<OptionType[]>([]);
@@ -169,8 +171,12 @@ export function FloatingActionButton() {
 
   function onSubmit(values: TransactionFormValues) {
     startTransition(async () => {
+      // Convert input amount (in current currency) back to VND base for storage
+      const amountInVND = convert(values.amount, currentCurrency, "VND");
+
       const dataToSubmit = {
         ...values,
+        amount: amountInVND,
         date: new Date(values.date),
       };
 
@@ -260,7 +266,7 @@ export function FloatingActionButton() {
                   name="amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Số tiền</FormLabel>
+                      <FormLabel>Số tiền ({currentCurrency})</FormLabel>
                       <Input type="number" placeholder="50000" {...field} />
                       <FormMessage />
                     </FormItem>

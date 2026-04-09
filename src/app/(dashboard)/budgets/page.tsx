@@ -102,7 +102,7 @@ export default async function BudgetsPage() {
                       <div className="space-y-1.5">
                         <p className="text-muted-foreground text-[10px] uppercase tracking-widest font-black">Đã chi tiêu</p>
                         <p className={`font-black text-xl ${isOverBudget ? 'text-rose-600' : 'text-primary'}`}>
-                          {formatCurrency(budget.spentAmount)}
+                          <CurrencyDisplay amount={budget.spentAmount} />
                         </p>
                       </div>
                       <div className="text-right space-y-1.5 border-l pl-4">
@@ -110,7 +110,7 @@ export default async function BudgetsPage() {
                           {isOverBudget ? "Vượt mức" : "Còn lại"}
                         </p>
                         <p className={`font-black text-xl ${isOverBudget ? 'text-rose-600' : 'text-emerald-500'}`}>
-                          {formatCurrency(Math.abs(budget.remainingAmount))}
+                          <CurrencyDisplay amount={Math.abs(budget.remainingAmount)} />
                         </p>
                       </div>
                     </div>

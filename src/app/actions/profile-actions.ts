@@ -25,7 +25,7 @@ export async function updateProfile(data: z.infer<typeof profileSchema>): Promis
       where: { id: userId },
       data: {
         fullName: validatedData.fullName,
-        // email: validatedData.email, // Thường không cho đổi email trực tiếp nếu dùng AuthProvider
+        currency: validatedData.preferredCurrency,
       },
     });
 

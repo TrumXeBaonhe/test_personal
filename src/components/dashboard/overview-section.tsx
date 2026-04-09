@@ -61,7 +61,9 @@ export async function OverviewSection() {
               <span className="text-xs font-bold text-rose-500/70 uppercase">Chi tiêu tháng</span>
            </div>
            <p className="text-muted-foreground text-sm font-medium mb-1">Tháng hiện tại</p>
-           <h3 className="text-3xl font-extrabold text-rose-500">{formatCurrency(momStats.currentExpTotal || 0)}</h3>
+           <h3 className="text-3xl font-extrabold text-rose-500">
+             <CurrencyDisplay amount={momStats.currentExpTotal || 0} />
+           </h3>
            <div className={`mt-2 flex items-center gap-1 text-xs font-bold ${momStats.expDiffPercent >= 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
               {momStats.expDiffPercent >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
               {Math.abs(momStats.expDiffPercent)}% so với tháng trước

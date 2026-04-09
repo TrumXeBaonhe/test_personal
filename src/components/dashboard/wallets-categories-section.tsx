@@ -55,7 +55,9 @@ export async function WalletsAndCategoriesSection() {
                       <p className="text-[10px] text-muted-foreground uppercase font-medium">Hoạt động</p>
                     </div>
                     <div className="text-right">
-                       <p className="text-sm font-black text-primary">{formatCurrency(wallet.balance)}</p>
+                       <p className="text-sm font-black text-primary">
+                         <CurrencyDisplay amount={wallet.balance} />
+                       </p>
                        <div className="h-1 w-12 bg-primary/20 rounded-full ml-auto mt-1" />
                     </div>
                   </div>

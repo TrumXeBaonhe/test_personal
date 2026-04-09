@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { recordRepayment } from "@/app/actions/debt-loan-actions";
+import { useCurrency } from "@/components/currency-provider";
 
 const formSchema = z.object({
   amount: z.coerce.number().positive("Số tiền phải lớn hơn 0"),
@@ -44,6 +45,7 @@ interface RepaymentFormProps {
 }
 
 export function RepaymentForm({ debtLoan }: RepaymentFormProps) {
+  const { convert, currency: currentCurrency } = useCurrency();
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -51,7 +53,7 @@ export function RepaymentForm({ debtLoan }: RepaymentFormProps) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(formSchema) as any,
     defaultValues: {
-      amount: Number(debtLoan.remainingAmount),
+      amount: convert(Number(debtLoan.remainingAmount), "VND", currentCurrency),
       date: new Date().toISOString().split("T")[0],
       note: "",
     },
@@ -60,9 +62,12 @@ export function RepaymentForm({ debtLoan }: RepaymentFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
+      // Convert repayment amount to VND
+      const amountInVND = convert(values.amount, currentCurrency, "VND");
+
       const result = await recordRepayment({
         debtLoanId: debtLoan.id,
-        amount: values.amount,
+        amount: amountInVND,
         date: new Date(values.date),
         note: values.note,
       });
@@ -107,7 +112,7 @@ export function RepaymentForm({ debtLoan }: RepaymentFormProps) {
               name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Số tiền thanh toán</FormLabel>
+                  <FormLabel>Số tiền thanh toán ({currentCurrency})</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="0" {...field} />
                   </FormControl>

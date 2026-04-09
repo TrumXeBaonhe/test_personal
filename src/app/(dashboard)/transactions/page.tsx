@@ -162,7 +162,7 @@ export default async function TransactionsPage(props: {
                         "text-blue-500"
                       }`}>
                         {t.type === "INCOME" ? "+" : t.type === "EXPENSE" ? "-" : ""}
-                        {formatCurrency(Number(t.amount))}
+                        <CurrencyDisplay amount={Number(t.amount)} />
                       </span>
                     </TableCell>
                     <TableCell>

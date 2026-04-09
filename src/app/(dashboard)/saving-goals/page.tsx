@@ -423,13 +423,13 @@ export default function SavingGoalsPage() {
                               <option value="">-- Chọn ví --</option>
                               {wallets.map(w => (
                                 <option key={w.id} value={w.id}>
-                                  {w.name} ({formatCurrency(w.balance)})
+                                  {w.name} (<CurrencyDisplay amount={Number(w.balance)} />)
                                 </option>
                               ))}
                             </select>
                           </div>
                           <div className="grid gap-2">
-                            <Label>Số tiền nạp (VND)</Label>
+                            <Label>Số tiền nạp ({currentCurrency})</Label>
                             <Input 
                               type="number" 
                               value={contributionAmount} 

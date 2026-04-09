@@ -165,7 +165,7 @@ export function DebtLoanForm({ wallets }: DebtLoanFormProps) {
               name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Số tiền</FormLabel>
+                  <FormLabel>Số tiền ({currentCurrency})</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="0" {...field} />
                   </FormControl>

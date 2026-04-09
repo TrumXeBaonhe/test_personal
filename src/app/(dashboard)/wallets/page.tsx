@@ -77,7 +77,9 @@ export default function WalletsPage() {
   const handleOpenEdit = (wallet: WalletItem) => {
     setEditingWallet(wallet);
     setName(wallet.name);
-    setBalance(wallet.balance.toString());
+    // Convert VND from DB to current display currency
+    const displayBalance = convert(wallet.balance, "VND", currentCurrency);
+    setBalance(displayBalance.toString());
     setIcon(wallet.icon || "Wallet");
     setIsDialogOpen(true);
   };
@@ -86,9 +88,12 @@ export default function WalletsPage() {
     e.preventDefault();
     if (!name) return toast.error("Vui lòng nhập tên ví");
 
+    // Convert input amount (in current currency) back to VND base for storage
+    const amountInVND = convert(parseFloat(balance), currentCurrency, "VND");
+
     const data = {
       name,
-      balance: parseFloat(balance),
+      balance: amountInVND,
       icon,
     };
 

@@ -131,8 +131,8 @@ export function DebtLoanList({ items }: DebtLoanListProps) {
                 </div>
                 <Progress value={progress} className="h-2" />
                 <div className="flex justify-between text-[10px] text-muted-foreground">
-                  <span>Còn nợ: {formatCurrency(Number(item.remainingAmount))}</span>
-                  <span>Đã trả: {formatCurrency(paidAmount)}</span>
+                  <span>Còn nợ: <CurrencyDisplay amount={Number(item.remainingAmount)} /></span>
+                  <span>Đã trả: <CurrencyDisplay amount={paidAmount} /></span>
                 </div>
               </div>
 

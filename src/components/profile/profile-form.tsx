@@ -79,7 +79,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
             <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <select
               value={currency}
-              onChange={(e) => setCurrency(e.target.value as "VND" | "USD")}
+              onChange={(e) => setCurrency(e.target.value as "VND" | "USD" | "EUR")}
               className="flex h-12 w-full rounded-2xl border-none bg-muted/20 pl-10 pr-3 py-1 text-sm shadow-inner transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
             >
               <option value="VND">VND - Việt Nam Đồng</option>

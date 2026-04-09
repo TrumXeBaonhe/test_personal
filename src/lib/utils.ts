@@ -11,7 +11,8 @@ export function cn(...inputs: ClassValue[]) {
  * @param currency - Mã tiền tệ (mặc định: VND)
  */
 export function formatCurrency(amount: number, currency = "VND"): string {
-  return new Intl.NumberFormat("vi-VN", {
+  const locale = currency === "VND" ? "vi-VN" : currency === "USD" ? "en-US" : "de-DE";
+  return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
     minimumFractionDigits: currency === "VND" ? 0 : 2,

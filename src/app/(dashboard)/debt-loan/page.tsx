@@ -58,7 +58,7 @@ export default async function DebtLoanPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600 dark:text-red-400">
-              {formatCurrency(totalDebt)}
+              <CurrencyDisplay amount={totalDebt} />
             </div>
             <p className="text-xs text-muted-foreground">
               Tổng các khoản bạn cần phải trả
@@ -72,7 +72,7 @@ export default async function DebtLoanPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-              {formatCurrency(totalLoan)}
+              <CurrencyDisplay amount={totalLoan} />
             </div>
             <p className="text-xs text-muted-foreground">
               Tổng các khoản bạn sẽ được nhận lại

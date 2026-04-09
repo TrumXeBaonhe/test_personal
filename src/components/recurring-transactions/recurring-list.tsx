@@ -82,7 +82,8 @@ export function RecurringList({ data }: { data: RecurringWithRelations[] }) {
             
             <div className="flex flex-col items-end gap-2">
               <span className={`font-bold ${item.type === 'INCOME' ? 'text-green-600' : item.type === 'EXPENSE' ? 'text-red-500' : ''}`}>
-                {item.type === 'INCOME' ? '+' : item.type === 'EXPENSE' ? '-' : ''}{formatCurrency(Number(item.amount))}
+                {item.type === 'INCOME' ? '+' : item.type === 'EXPENSE' ? '-' : ''}
+                <CurrencyDisplay amount={Number(item.amount)} />
               </span>
               <div className="flex gap-2">
                 {item.status === 'ACTIVE' && (
