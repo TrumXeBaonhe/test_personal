@@ -129,7 +129,9 @@ export default async function DashboardPage() {
                   <Wallet size={120} />
                 </div>
                 <p className="text-emerald-100/80 text-sm font-semibold uppercase tracking-wider mb-2">Tổng tài sản thực tế</p>
-                <h3 className="text-3xl font-black mb-4 tracking-tight">{formatCurrency(totalBalanceDisplay, preferredCurrency)}</h3>
+                <h3 className="text-3xl font-black mb-4 tracking-tight">
+                  <CurrencyDisplay amount={totalBalanceVND} />
+                </h3>
                 <div className="flex items-center gap-2 text-xs text-emerald-100/60 bg-white/10 w-fit px-3 py-1 rounded-full backdrop-blur-md">
                   <Wallet size={12} />
                   <span>{walletCount} ví đang hoạt động</span>
@@ -159,7 +161,9 @@ export default async function DashboardPage() {
                     <span className="text-xs font-bold text-rose-500/70 uppercase">Chi tiêu tháng</span>
                  </div>
                  <p className="text-muted-foreground text-sm font-medium mb-1">Tháng hiện tại</p>
-                 <h3 className="text-3xl font-extrabold text-rose-500">{formatCurrency(currentExpDisplay, preferredCurrency)}</h3>
+                 <h3 className="text-3xl font-extrabold text-rose-500">
+                    <CurrencyDisplay amount={currentExpVND} />
+                 </h3>
                  <div className={`mt-2 flex items-center gap-1 text-xs font-bold ${stats.momStats.expDiffPercent >= 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
                     {stats.momStats.expDiffPercent >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                     {Math.abs(stats.momStats.expDiffPercent)}% so với tháng trước
@@ -283,7 +287,9 @@ export default async function DashboardPage() {
                             <p className="text-[10px] text-muted-foreground uppercase font-medium">Hoạt động</p>
                           </div>
                           <div className="text-right">
-                             <p className="text-sm font-black text-primary">{formatCurrency(convertServer(Number(wallet.balance), "VND", preferredCurrency), preferredCurrency)}</p>
+                             <div className="text-sm font-black text-primary">
+                                <CurrencyDisplay amount={Number(wallet.balance)} />
+                             </div>
                              <div className="h-1 w-12 bg-primary/20 rounded-full ml-auto mt-1" />
                           </div>
                         </div>
