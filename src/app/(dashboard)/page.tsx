@@ -11,9 +11,6 @@ import { CurrencyDisplay } from "@/components/currency-display";
 import { BudgetAlerts } from "@/components/dashboard/budget-alerts";
 import { FadeIn } from "@/components/fade-in";
 import { AIAdvisor } from "@/components/dashboard/ai-advisor";
-import { TransactionMap, MapTransaction } from "@/components/dashboard/transaction-map";
-import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
-import { getTransactionLocations } from "@/app/actions/transaction-actions";
 import { getExchangeRates, ExchangeRates } from "@/app/actions/exchange-actions";
 import { Currency } from "@/components/currency-provider";
 
@@ -22,13 +19,12 @@ export default async function DashboardPage() {
   const userId = session!.user!.id;
 
   // Thực hiện truy vấn song song (Parallel Data Fetching)
-  const [rawWallets, categories, savingGoals, stats, dbUser, locationRes, exchangeRatesData] = await Promise.all([
+  const [rawWallets, categories, savingGoals, stats, dbUser, exchangeRatesData] = await Promise.all([
     prisma.wallet.findMany({ where: { userId } }),
     prisma.category.findMany({ where: { userId, isDeleted: false } }),
     prisma.savingGoal.findMany({ where: { userId } }),
     getDashboardStats(),
     prisma.user.findUnique({ where: { id: userId } }),
-    getTransactionLocations(),
     getExchangeRates(),
   ]);
 
@@ -201,9 +197,8 @@ export default async function DashboardPage() {
 
           <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
             <FadeIn delay={0.2} direction="up">
-              <div className="h-full space-y-6">
+              <div className="h-full">
                 <AIAdvisor />
-                <TransactionMap transactions={locationRes.success ? (locationRes.data as unknown as MapTransaction[]) : []} />
               </div>
             </FadeIn>
 
