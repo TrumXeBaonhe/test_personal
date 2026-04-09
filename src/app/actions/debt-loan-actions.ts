@@ -181,10 +181,10 @@ export async function getDebtsLoans() {
         ...item,
         amount: Number(item.amount),
         remainingAmount: Number(item.remainingAmount),
-        wallet: item.wallet ? {
+        wallet: {
             ...item.wallet,
             balance: Number(item.wallet.balance)
-        } : null,
+        },
         transactions: item.transactions.map(t => ({
             ...t,
             amount: Number(t.amount)

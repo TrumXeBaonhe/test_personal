@@ -60,7 +60,7 @@ export default function WalletsPage() {
     setIsLoading(true);
     try {
       const data = await getFormOptions();
-      setWallets(data.wallets.map(w => ({ ...w, balance: Number(w.balance) })));
+      setWallets(data.wallets.map((w: any) => ({ ...w, balance: Number(w.balance) })));
     } finally {
       setIsLoading(false);
     }

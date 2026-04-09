@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { getDashboardChartData } from "@/app/actions/dashboard-actions";
+import { getDashboardStats } from "@/app/actions/dashboard-actions";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SpendingPieChart } from "@/components/dashboard/spending-pie-chart";
 import { IncomeVsExpenseChart } from "@/components/dashboard/income-expense-chart";
@@ -10,7 +10,7 @@ export async function ChartsSection() {
   const session = await auth();
   if (!session?.user?.id) return null;
 
-  const stats = await getDashboardChartData();
+  const stats = await getDashboardStats();
 
   return (
     <div className="grid gap-6 grid-cols-1 lg:grid-cols-12">

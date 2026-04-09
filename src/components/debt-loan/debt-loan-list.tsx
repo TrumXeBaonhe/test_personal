@@ -33,9 +33,11 @@ import { RepaymentForm } from "./repayment-form";
 import { deleteDebtLoan } from "@/app/actions/debt-loan-actions";
 import { toast } from "sonner";
 
-interface DebtLoanWithRelations extends DebtLoan {
-    wallet: Wallet;
-    transactions: Transaction[];
+interface DebtLoanWithRelations extends Omit<DebtLoan, 'amount' | 'remainingAmount'> {
+    amount: number;
+    remainingAmount: number;
+    wallet: Omit<Wallet, 'balance'> & { balance: number };
+    transactions: (Omit<Transaction, 'amount'> & { amount: number })[];
 }
 
 interface DebtLoanListProps {

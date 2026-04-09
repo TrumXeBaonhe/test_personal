@@ -2,20 +2,22 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { formatCurrency } from "@/lib/utils";
 import { Wallet, CreditCard, TrendingUp, TrendingDown } from "lucide-react";
-import { getDashboardMoMStats } from "@/app/actions/dashboard-actions";
+import { getDashboardStats } from "@/app/actions/dashboard-actions";
 import { FadeIn } from "@/components/fade-in";
 
 export async function OverviewSection() {
   const session = await auth();
   const userId = session!.user!.id;
 
-  const [rawWallets, momStats] = await Promise.all([
+  const [rawWallets, stats] = await Promise.all([
     prisma.wallet.findMany({ 
       where: { userId },
       select: { id: true, name: true, balance: true }
     }),
-    getDashboardMoMStats(),
+    getDashboardStats(),
   ]);
+
+  const { momStats } = stats;
 
   const wallets = rawWallets.map((w) => ({ ...w, balance: Number(w.balance) }));
   const totalBalance = wallets.reduce((acc, wallet) => acc + wallet.balance, 0);

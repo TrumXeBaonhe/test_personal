@@ -15,9 +15,10 @@ import { toast } from "sonner";
 import { PauseCircle, PlayCircle, Trash2, Repeat, Loader2 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
-type RecurringWithRelations = RecurringTransaction & {
-  wallet: Wallet;
-  toWallet: Wallet | null;
+type RecurringWithRelations = Omit<RecurringTransaction, 'amount'> & {
+  amount: number;
+  wallet: Omit<Wallet, 'balance'> & { balance: number };
+  toWallet: (Omit<Wallet, 'balance'> & { balance: number }) | null;
   category: Category | null;
 };
 

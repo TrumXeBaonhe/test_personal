@@ -176,10 +176,10 @@ export async function getRecurringTransactions() {
     lastProcessedDate: tx.lastProcessedDate,
     createdAt: tx.createdAt,
     updatedAt: tx.updatedAt,
-    wallet: tx.wallet ? {
+    wallet: {
       ...tx.wallet,
       balance: (tx.wallet.balance as any).toNumber()
-    } : null,
+    },
     toWallet: tx.toWallet ? {
       ...tx.toWallet,
       balance: (tx.toWallet.balance as any).toNumber()
