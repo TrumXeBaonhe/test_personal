@@ -21,7 +21,7 @@ export default async function DashboardPage() {
   const userId = session!.user!.id;
 
   // Thực hiện truy vấn song song (Parallel Data Fetching)
-  const [rawWallets, categories, savingGoals, stats, dbUser, locationRes] = await Promise.all([
+  const [rawWallets, categories, savingGoals, stats, dbUser, locationRes, exchangeRatesData] = await Promise.all([
     prisma.wallet.findMany({ where: { userId } }),
     prisma.category.findMany({ where: { userId, isDeleted: false } }),
     prisma.savingGoal.findMany({ where: { userId } }),
@@ -31,7 +31,15 @@ export default async function DashboardPage() {
     getExchangeRates(),
   ]);
 
-  const preferredCurrency = (dbUser?.preferredCurrency || "VND") as Currency;
+  // Serialize Decimal → number để tránh lỗi khi truyền sang Client Components
+  const wallets = rawWallets.map((w) => ({ ...w, balance: Number(w.balance) }));
+  const serializedSavingGoals = savingGoals.map((g) => ({
+    ...g,
+    targetAmount: Number(g.targetAmount),
+    currentAmount: Number(g.currentAmount),
+  }));
+
+  const preferredCurrency = (dbUser?.currency || "VND") as Currency;
   const rates = exchangeRatesData as ExchangeRates;
 
   // Helper cho server-side conversion
