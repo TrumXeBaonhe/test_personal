@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { updatePassword } from "@/app/actions/profile-actions";
+import { ActionResult } from "@/lib/action-types";
 import { toast } from "sonner";
 import { Loader2, KeyRound } from "lucide-react";
 
@@ -29,7 +30,11 @@ const passwordSchema = z.object({
 
 type PasswordFormValues = z.infer<typeof passwordSchema>;
 
-export function PasswordForm() {
+interface PasswordFormProps {
+  onSuccess?: () => void;
+}
+
+export function PasswordForm({ onSuccess }: PasswordFormProps) {
   const [loading, setLoading] = useState(false);
 
   const form = useForm<PasswordFormValues>({
@@ -44,16 +49,21 @@ export function PasswordForm() {
   async function onSubmit(values: PasswordFormValues) {
     setLoading(true);
     try {
-      await updatePassword({
+      const result = await updatePassword({
         currentPassword: values.currentPassword,
         newPassword: values.newPassword,
       });
-      toast.success("Mật khẩu đã được thay đổi thành công!");
-      form.reset();
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message || "Có lỗi xảy ra khi đổi mật khẩu.");
+
+      if (result.success) {
+        toast.success("Mật khẩu đã được thay đổi thành công!");
+        form.reset();
+        onSuccess?.();
+      } else {
+        toast.error(result.error || "Có lỗi xảy ra khi đổi mật khẩu.");
       }
+    } catch (error) {
+      toast.error("Đã có lỗi hệ thống xảy ra. Vui lòng thử lại sau.");
+      console.error(error);
     } finally {
       setLoading(false);
     }

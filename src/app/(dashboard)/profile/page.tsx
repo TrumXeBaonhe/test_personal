@@ -1,8 +1,9 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { User, Mail, Shield, Wallet, CreditCard, ChevronRight } from "lucide-react";
+import { User, Mail, Wallet, CreditCard } from "lucide-react";
 import { ProfileForm } from "@/components/profile/profile-form";
+import { SecuritySettings } from "@/components/profile/security-settings";
 import { FadeIn } from "@/components/fade-in";
 
 export default async function ProfilePage() {
@@ -97,18 +98,7 @@ export default async function ProfilePage() {
               <CardTitle className="text-lg font-bold">Bảo mật & Quyền riêng tư</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-               <div className="flex items-center justify-between p-4 bg-background/50 rounded-2xl border border-primary/10 hover:border-primary/30 transition-all cursor-pointer group">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-primary/10 rounded-xl">
-                      < Shield className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm">Đổi mật khẩu</p>
-                      <p className="text-xs text-muted-foreground">Bảo vệ tài khoản của bạn bằng mật khẩu mạnh</p>
-                    </div>
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-               </div>
+               <SecuritySettings />
             </CardContent>
          </Card>
       </FadeIn>
