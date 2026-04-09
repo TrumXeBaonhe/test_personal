@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { getDashboardStats } from "@/app/actions/dashboard-actions";
 import { SpendingPieChart } from "@/components/dashboard/spending-pie-chart";
 import { IncomeVsExpenseChart } from "@/components/dashboard/income-expense-chart";
+import { CurrencyDisplay } from "@/components/currency-display";
 import { BudgetAlerts } from "@/components/dashboard/budget-alerts";
 import { FadeIn } from "@/components/fade-in";
 import { AIAdvisor } from "@/components/dashboard/ai-advisor";
