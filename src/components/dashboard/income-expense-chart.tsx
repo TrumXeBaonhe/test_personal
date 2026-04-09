@@ -58,6 +58,7 @@ export function IncomeVsExpenseChart({ data }: IncomeVsExpenseChartProps) {
                 tick={{ fontSize: 10 }}
               />
               <Tooltip
+                cursor={false}
                 formatter={(value: any) => [formatPrice(Number(value || 0), currentCurrency), ""]}
                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
               />
