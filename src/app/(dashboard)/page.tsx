@@ -3,7 +3,6 @@ import prisma from "@/lib/prisma";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Wallet, CreditCard, ArrowRight, PlusCircle, TrendingUp, TrendingDown, Target } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { getDashboardStats } from "@/app/actions/dashboard-actions";
 import { SpendingPieChart } from "@/components/dashboard/spending-pie-chart";

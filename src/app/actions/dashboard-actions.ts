@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { startOfDay, subDays, format } from "date-fns";
+import { startOfDay, subDays } from "date-fns";
 
 export async function getDashboardStats() {
   try {
@@ -27,7 +27,7 @@ export async function getDashboardStats() {
         _sum: { amount: true },
       }),
       // 2. Dữ liệu Bar Chart
-      prisma.$queryRaw<any[]>`
+      prisma.$queryRaw<{ date_label: string; income: number; expense: number }[]>`
         SELECT 
           TO_CHAR(date, 'DD/MM') as date_label,
           SUM(CASE WHEN type = 'INCOME' THEN amount ELSE 0 END) as income,

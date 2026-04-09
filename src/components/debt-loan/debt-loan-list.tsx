@@ -33,12 +33,12 @@ import { RepaymentForm } from "./repayment-form";
 import { deleteDebtLoan } from "@/app/actions/debt-loan-actions";
 import { toast } from "sonner";
 
-interface DebtLoanWithRelations extends Omit<DebtLoan, 'amount' | 'remainingAmount'> {
+export type DebtLoanWithRelations = Omit<DebtLoan, 'amount' | 'remainingAmount'> & {
     amount: number;
     remainingAmount: number;
-    wallet: Omit<Wallet, 'balance'> & { balance: number };
+    wallet: (Omit<Wallet, 'balance'> & { balance: number }) | null;
     transactions: (Omit<Transaction, 'amount'> & { amount: number })[];
-}
+};
 
 interface DebtLoanListProps {
   items: DebtLoanWithRelations[];
@@ -139,7 +139,7 @@ export function DebtLoanList({ items }: DebtLoanListProps) {
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div className="flex items-center gap-2">
                   <WalletIcon className="h-3 w-3 text-muted-foreground" />
-                  <span className="truncate">{item.wallet.name}</span>
+                  <span className="truncate">{item.wallet?.name || "Ví đã xóa"}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-3 w-3 text-muted-foreground" />

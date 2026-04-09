@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 type Currency = "VND" | "USD";
 
@@ -13,14 +13,12 @@ interface CurrencyContextType {
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
-  const [currency, setCurrency] = useState<Currency>("VND");
-
-  useEffect(() => {
+  const [currency, setCurrency] = useState<Currency>(() => {
+    if (typeof window === "undefined") return "VND";
     const saved = localStorage.getItem("preferred-currency") as Currency;
-    if (saved && (saved === "VND" || saved === "USD")) {
-      setCurrency(saved);
-    }
-  }, []);
+    if (saved && (saved === "VND" || saved === "USD")) return saved;
+    return "VND";
+  });
 
   const handleSetCurrency = (c: Currency) => {
     setCurrency(c);

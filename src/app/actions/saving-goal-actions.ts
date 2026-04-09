@@ -27,7 +27,6 @@ export async function createSavingGoal(data: z.infer<typeof savingGoalSchema>): 
         ...validatedData,
         deadlineDate: new Date(validatedData.deadlineDate),
         userId,
-        isRoundUp: !!validatedData.isRoundUp,
       },
     });
 
@@ -52,7 +51,6 @@ export async function updateSavingGoal(id: string, data: z.infer<typeof savingGo
       data: {
         ...validatedData,
         deadlineDate: new Date(validatedData.deadlineDate),
-        isRoundUp: !!validatedData.isRoundUp,
       },
     });
 

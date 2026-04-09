@@ -35,7 +35,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
       } else {
         toast.error(result.error || "Có lỗi xảy ra");
       }
-    } catch (error) {
+    } catch {
       toast.error("Lỗi hệ thống");
     } finally {
       setIsPending(false);

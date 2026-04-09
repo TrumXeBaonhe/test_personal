@@ -28,9 +28,19 @@ import { AdvancedAnalysis } from "@/components/reports/advanced-analysis";
 import { getDashboardStats } from "@/app/actions/dashboard-actions";
 import { FadeIn } from "@/components/fade-in";
 
+interface DashboardStatsResult {
+  momStats: {
+    currentExpTotal: number;
+    lastExpTotal: number;
+    expDiffPercent: number;
+  };
+  pieChartData: { name: string; value: number; color: string }[];
+  barChartData: { date: string; income: number; expense: number }[];
+}
+
 export default function ReportsPage() {
   const [trendData, setTrendData] = useState<{ label: string; income: number; expense: number }[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<DashboardStatsResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
 

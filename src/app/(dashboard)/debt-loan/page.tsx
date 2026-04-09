@@ -3,10 +3,10 @@ import { getDebtsLoans } from '@/app/actions/debt-loan-actions';
 import { getWallets } from '@/app/actions/wallet-actions';
 import { DebtLoanList } from '@/components/debt-loan/debt-loan-list';
 import { DebtLoanForm } from '@/components/debt-loan/debt-loan-form';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatCurrency } from '@/lib/utils';
-import { Wallet, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
+import { ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Ghi nợ & Cho vay | Quản lý Chi tiêu',

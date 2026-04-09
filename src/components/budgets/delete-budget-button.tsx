@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,7 +33,7 @@ export function DeleteBudgetButton({ budgetId }: { budgetId: string }) {
       } else {
         toast.error(res.error || "Không thể xóa ngân sách");
       }
-    } catch (error) {
+    } catch {
       toast.error("Lỗi khi xóa ngân sách");
     } finally {
       setLoading(false);

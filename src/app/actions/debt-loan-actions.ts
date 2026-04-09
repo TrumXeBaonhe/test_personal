@@ -192,7 +192,7 @@ export async function getDebtsLoans() {
     }));
 
     return { success: true, data };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Không thể lấy dữ liệu" };
   }
 }
@@ -212,7 +212,7 @@ export async function deleteDebtLoan(id: string) {
 
         revalidatePath("/debt-loan");
         return { success: true };
-    } catch (error) {
+    } catch {
         return { success: false, error: "Lỗi khi xoá" };
     }
 }

@@ -12,8 +12,18 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import * as XLSX from "xlsx";
 
+interface TransactionExportItem {
+  date: string | Date;
+  note?: string;
+  amount: number;
+  type: string;
+  category?: { name: string } | null;
+  wallet?: { name: string } | null;
+  toWallet?: { name: string } | null;
+}
+
 interface ExportButtonProps {
-  data: any[];
+  data: TransactionExportItem[];
   filename?: string;
 }
 

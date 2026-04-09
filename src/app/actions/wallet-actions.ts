@@ -94,7 +94,7 @@ export async function getWallets() {
     }));
 
     return { success: true, wallets };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Không thể lấy danh sách ví" };
   }
 }

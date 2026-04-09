@@ -22,13 +22,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { createTransaction, getFormOptions } from "@/app/actions/transaction-actions";
 import { toast } from "sonner";
@@ -145,19 +138,18 @@ export function FloatingActionButton() {
       setIsLoading(true);
       try {
         const data = await getFormOptions();
-        console.log("FAB Options:", data);
-        setWallets(data.wallets.map((w: any) => ({
+        setWallets(data.wallets.map((w: { id: string; name: string | null; balance: number | string }) => ({
           id: w.id,
           name: w.name || "Ví không tên",
           balance: Number(w.balance)
         })));
-        setCategories(data.categories.map((c: any) => ({
+        setCategories(data.categories.map((c) => ({
           id: c.id,
           name: c.name || "Danh mục không tên",
           type: c.type
         })));
         if (data.tags) {
-          setTags(data.tags.map((t: any) => ({ id: t.id, name: t.name, color: t.color })));
+          setTags(data.tags.map((t: { id: string; name: string; color: string | null }) => ({ id: t.id, name: t.name, color: t.color })));
         }
       } finally {
         setIsLoading(false);

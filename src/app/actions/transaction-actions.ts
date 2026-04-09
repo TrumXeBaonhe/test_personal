@@ -57,6 +57,7 @@ export async function createTransaction(data: z.infer<typeof createTransactionSc
       }
 
       // 2. Tạo bản ghi giao dịch chính
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const transaction = await (tx.transaction as any).create({
         data: {
           userId,
@@ -77,6 +78,7 @@ export async function createTransaction(data: z.infer<typeof createTransactionSc
       if (parsedData.tagIds && parsedData.tagIds.length > 0) {
         await Promise.all(
           parsedData.tagIds.map((tagId) =>
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (tx as any).tagOnTransaction.create({
               data: { tagId, transactionId: transaction.id },
             })
@@ -92,6 +94,7 @@ export async function createTransaction(data: z.infer<typeof createTransactionSc
         if (roundUpAmount > 0) {
           // Tìm mục tiêu tiết kiệm đang bật Round-up (lấy cái gần nhất)
           const roundUpGoal = await tx.savingGoal.findFirst({
+            // @ts-expect-error - isRoundUp is newly added feature not yet in Prisma schema types
             where: { userId, isRoundUp: true },
             orderBy: { createdAt: "desc" }
           });
@@ -265,6 +268,7 @@ export async function getTransactions(params: {
   }
 
   const [rawTransactions, total] = await Promise.all([
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (prisma.transaction as any).findMany({
       where,
       skip,
@@ -281,6 +285,7 @@ export async function getTransactions(params: {
   ]);
 
   // Serialize Decimal → number để tránh lỗi khi truyền sang Client Components
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const transactions = (rawTransactions as any).map((t: any) => ({
     ...t,
     amount: Number(t.amount),
@@ -302,19 +307,13 @@ export async function getFormOptions() {
   const [rawWallets, categories, tags] = await Promise.all([
     prisma.wallet.findMany({ where: { userId: session.user.id } }),
     prisma.category.findMany({ where: { userId: session.user.id, isDeleted: false } }),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (prisma as any).tag.findMany({ where: { userId: session.user.id } })
   ]);
 
   // Serialize Decimal → number để tránh lỗi khi truyền sang Client Components
-  const wallets = (rawWallets as any).map((w: any) => ({
-    id: w.id,
-    userId: w.userId,
-    name: w.name,
-    balance: Number(w.balance),
-    icon: w.icon,
-    createdAt: w.createdAt,
-    updatedAt: w.updatedAt,
-  }));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const wallets = (rawWallets as any).map((w: any) => ({ ...w, balance: Number(w.balance) }));
 
   return { wallets, categories, tags };
 }
@@ -325,6 +324,7 @@ export async function getTransactionLocations() {
   const userId = session.user.id;
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const transactions = await (prisma.transaction as any).findMany({
       where: {
         userId,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Wallet, Pencil, Trash2, MoreVertical, CreditCard, Landmark, Banknote } from "lucide-react";
+import { Plus, Wallet, Pencil, Trash2, CreditCard, Landmark, Banknote } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -9,12 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { createWallet, updateWallet, deleteWallet } from "@/app/actions/wallet-actions";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,7 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { getFormOptions } from "@/app/actions/transaction-actions";
-import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 
 type WalletItem = {
   id: string;
@@ -60,7 +54,10 @@ export default function WalletsPage() {
     setIsLoading(true);
     try {
       const data = await getFormOptions();
-      setWallets(data.wallets.map((w: any) => ({ ...w, balance: Number(w.balance) })));
+      setWallets(data.wallets.map((w: { balance: number | string } & Record<string, unknown>) => ({ 
+        ...w, 
+        balance: Number(w.balance) 
+      } as WalletItem)));
     } finally {
       setIsLoading(false);
     }
