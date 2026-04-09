@@ -94,7 +94,6 @@ export async function createTransaction(data: z.infer<typeof createTransactionSc
         if (roundUpAmount > 0) {
           // Tìm mục tiêu tiết kiệm đang bật Round-up (lấy cái gần nhất)
           const roundUpGoal = await tx.savingGoal.findFirst({
-            // @ts-expect-error - isRoundUp is newly added feature not yet in Prisma schema types
             where: { userId, isRoundUp: true },
             orderBy: { createdAt: "desc" }
           });
