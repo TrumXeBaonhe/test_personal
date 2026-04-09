@@ -12,8 +12,8 @@ import { formatCurrency } from "@/lib/utils";
 import { FadeIn } from "@/components/fade-in";
 
 export default async function BudgetsPage() {
-  const session = await auth();
-  const userId = session!.user!.id;
+  const authSession = await auth();
+  const userId = authSession!.user!.id;
 
   const [budgets, categories] = await Promise.all([
     getBudgetsWithProgress(),
@@ -22,7 +22,13 @@ export default async function BudgetsPage() {
     })
   ]);
 
-  const currentMonth = format(new Date(), 'MMMM yyyy', { locale: vi });
+  // Lấy tên tháng theo GMT+7
+  const now = new Date();
+  const gmt7Month = new Intl.DateTimeFormat("vi-VN", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    month: "long",
+    year: "numeric",
+  }).format(now);
 
   return (
     <div className="flex flex-col space-y-8 pb-10">
@@ -31,7 +37,7 @@ export default async function BudgetsPage() {
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-gradient">Quản lý Ngân sách</h2>
             <p className="text-muted-foreground mt-1 capitalize text-sm flex items-center gap-2">
-              <LayoutList className="h-4 w-4" /> Tháng {currentMonth}
+              <LayoutList className="h-4 w-4" /> {gmt7Month}
             </p>
           </div>
           <BudgetForm categories={categories} />

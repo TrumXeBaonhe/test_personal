@@ -2,10 +2,10 @@
 
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { startOfMonth, endOfMonth } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { ActionResult, actionSuccess, actionError } from "@/lib/action-types";
+import { getGMT7MonthRange, normalizeToGMT7Month } from "@/lib/utils";
 
 const budgetSchema = z.object({
   categoryId: z.string().min(1, "Danh mục không được để trống"),
@@ -22,9 +22,8 @@ export async function upsertBudget(
     const userId = session.user.id;
 
     const validated = budgetSchema.parse(data);
-    // Normalise to midnight UTC on the 1st so all timezones produce the same stored value
-    const d = validated.monthYear;
-    const normalizedMonth = new Date(Date.UTC(d.getFullYear(), d.getMonth(), 1));
+    // Normalize to the 1st of the month in GMT+7 for consistency
+    const normalizedMonth = normalizeToGMT7Month(validated.monthYear);
 
     await prisma.budget.upsert({
       where: {
@@ -76,18 +75,15 @@ export async function getBudgetsWithProgress() {
   if (!session?.user?.id) throw new Error("Unauthorized");
   const userId = session.user.id;
 
-  const now = new Date();
-  const start = startOfMonth(now);
-  const end = endOfMonth(now);
+  // Use GMT+7 ranges for querying both budgets and transactions
+  const { start, end, targetYear, targetMonth } = getGMT7MonthRange();
+  const normalizedTarget = new Date(Date.UTC(targetYear, targetMonth, 1));
 
-  // 1. Fetch budgets for the current month using a range to avoid timezone mismatches
+  // 1. Fetch budgets for the current GMT+7 month
   const budgets = await prisma.budget.findMany({
     where: {
       userId,
-      monthYear: {
-        gte: start,
-        lte: end,
-      },
+      monthYear: normalizedTarget,
     },
     include: {
       category: true,
@@ -96,7 +92,7 @@ export async function getBudgetsWithProgress() {
 
   if (budgets.length === 0) return [];
 
-  // 2. Fetch all relevant transactions in one query using groupBy
+  // 2. Fetch all relevant transactions in one query using groupBy, within GMT+7 boundaries
   const categoryIds = budgets
     .map((b) => b.categoryId)
     .filter((id): id is string => id !== null);
@@ -138,3 +134,4 @@ export async function getBudgetsWithProgress() {
 
   return budgetWithProgress;
 }
+
