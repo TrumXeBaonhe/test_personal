@@ -22,7 +22,9 @@ export async function upsertBudget(
     const userId = session.user.id;
 
     const validated = budgetSchema.parse(data);
-    const normalizedMonth = startOfMonth(validated.monthYear);
+    // Normalise to midnight UTC on the 1st so all timezones produce the same stored value
+    const d = validated.monthYear;
+    const normalizedMonth = new Date(Date.UTC(d.getFullYear(), d.getMonth(), 1));
 
     await prisma.budget.upsert({
       where: {
@@ -78,11 +80,14 @@ export async function getBudgetsWithProgress() {
   const start = startOfMonth(now);
   const end = endOfMonth(now);
 
-  // 1. Fetch budgets for the current month
+  // 1. Fetch budgets for the current month using a range to avoid timezone mismatches
   const budgets = await prisma.budget.findMany({
     where: {
       userId,
-      monthYear: start,
+      monthYear: {
+        gte: start,
+        lte: end,
+      },
     },
     include: {
       category: true,

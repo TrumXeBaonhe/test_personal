@@ -64,11 +64,16 @@ export function BudgetForm({ categories }: BudgetFormProps) {
     try {
       // Mặc định thiết lập cho tháng hiện tại
       const monthYear = startOfMonth(new Date());
-      await upsertBudget({
+      const result = await upsertBudget({
         categoryId: values.categoryId,
         limitAmount: values.limitAmount,
         monthYear,
       });
+
+      if (!result.success) {
+        toast.error(result.error || "Có lỗi xảy ra khi lưu ngân sách.");
+        return;
+      }
 
       toast.success("Đã cập nhật hạn mức ngân sách!");
       setOpen(false);
