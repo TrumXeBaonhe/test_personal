@@ -11,6 +11,7 @@ import { CurrencyDisplay } from "@/components/currency-display";
 import { BudgetAlerts } from "@/components/dashboard/budget-alerts";
 import { FadeIn } from "@/components/fade-in";
 import { AIAdvisor } from "@/components/dashboard/ai-advisor";
+import { formatCurrency, formatCurrencyCompact } from "@/lib/utils";
 import { getExchangeRates, ExchangeRates } from "@/app/actions/exchange-actions";
 import { Currency } from "@/components/currency-provider";
 
