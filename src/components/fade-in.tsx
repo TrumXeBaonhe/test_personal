@@ -27,9 +27,9 @@ export function FadeIn({ children, delay = 0, direction = "up", className }: Fad
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true }}
       transition={{
-        duration: 0.6,
+        duration: 0.4,
         delay: delay,
-        ease: [0.21, 0.47, 0.32, 0.98],
+        ease: "easeOut",
       }}
     >
       {children}

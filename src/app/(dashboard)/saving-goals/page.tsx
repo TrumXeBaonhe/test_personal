@@ -219,7 +219,7 @@ export default function SavingGoalsPage() {
 
   return (
     <div className="space-y-8 pb-10">
-      <FadeIn delay={0.1}>
+      <FadeIn delay={0.05}>
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-gradient">Mục tiêu tiết kiệm</h2>
@@ -330,7 +330,7 @@ export default function SavingGoalsPage() {
                       </DropdownMenuItem>
                       <AlertDialog>
                         <AlertDialogTrigger 
-                          nativeButton={false}
+                          nativeButton={true}
                           render={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive cursor-pointer" />}
                         >
                           <div className="flex items-center w-full">

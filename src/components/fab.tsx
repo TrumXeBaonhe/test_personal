@@ -22,9 +22,25 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { createTransaction, getFormOptions } from "@/app/actions/transaction-actions";
 import { toast } from "sonner";
+import { TagSelector } from "./tag-selector";
+import { LocationInput } from "./location-input";
+import { ReceiptScanner } from "./receipt-scanner";
+
+interface Tag {
+  id: string;
+  name: string;
+  color: string | null;
+}
 
 const transactionBaseSchema = z.object({
   type: z.enum(["INCOME", "EXPENSE", "TRANSFER"]),
@@ -34,9 +50,14 @@ const transactionBaseSchema = z.object({
   amount: z.coerce.number().positive("Số tiền phải lớn hơn 0"),
   date: z.string().refine((val) => !isNaN(Date.parse(val)), "Ngày không hợp lệ"),
   note: z.string().optional(),
+  tagIds: z.array(z.string()).optional(),
+  locationName: z.string().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
 });
 
 // Cách tiếp cận tốt hơn — dùng superRefine (1 lần, không chain):
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const transactionSchema: z.ZodType<TransactionFormValues, any, any> = transactionBaseSchema.superRefine((data, ctx) => {
   if (data.type === "TRANSFER") {
     if (!data.toWalletId) {
@@ -79,12 +100,17 @@ interface TransactionFormValues {
   amount: number;
   date: string;
   note?: string;
+  tagIds?: string[];
+  locationName?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export function FloatingActionButton() {
   const [open, setOpen] = useState(false);
   const [wallets, setWallets] = useState<OptionType[]>([]);
   const [categories, setCategories] = useState<OptionType[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -98,6 +124,8 @@ export function FloatingActionButton() {
       amount: 0,
       date: new Date().toISOString().split('T')[0],
       note: "",
+      tagIds: [],
+      locationName: "",
     },
   });
 
@@ -117,12 +145,20 @@ export function FloatingActionButton() {
       setIsLoading(true);
       try {
         const data = await getFormOptions();
-        setWallets(data.wallets.map((w) => ({
+        console.log("FAB Options:", data);
+        setWallets(data.wallets.map((w: any) => ({
           id: w.id,
-          name: w.name,
+          name: w.name || "Ví không tên",
           balance: Number(w.balance)
         })));
-        setCategories(data.categories as OptionType[]);
+        setCategories(data.categories.map((c: any) => ({
+          id: c.id,
+          name: c.name || "Danh mục không tên",
+          type: c.type
+        })));
+        if (data.tags) {
+          setTags(data.tags.map((t: any) => ({ id: t.id, name: t.name, color: t.color })));
+        }
       } finally {
         setIsLoading(false);
       }
@@ -154,6 +190,8 @@ export function FloatingActionButton() {
           type: "EXPENSE",
           amount: 0,
           date: new Date().toISOString().split('T')[0],
+          tagIds: [],
+          locationName: "",
         });
       } else {
         toast.error(res.error || "Gặp lỗi khi tạo giao dịch");
@@ -168,28 +206,52 @@ export function FloatingActionButton() {
       <DialogTrigger render={<Button className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg" size="icon" />}>
         <Plus className="h-6 w-6" />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Thêm giao dịch mới</DialogTitle>
-          <DialogDescription>
-            Ghi chép một khoản thu, chi hoặc chuyển khoản.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="p-6 overflow-y-auto flex-1 no-scrollbar">
+          <DialogHeader className="mb-4">
+            <DialogTitle>Thêm giao dịch mới</DialogTitle>
+            <DialogDescription>
+              Ghi chép một khoản thu, chi hoặc chuyển khoản.
+            </DialogDescription>
+          </DialogHeader>
 
         {isLoading ? (
           <div className="py-8 text-center text-sm text-muted-foreground">Đang tải dữ liệu...</div>
         ) : (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <ReceiptScanner onScanComplete={(data) => {
+                const currentValues = form.getValues();
+                form.reset({
+                  ...currentValues,
+                  amount: data.amount || currentValues.amount,
+                  date: data.date || currentValues.date,
+                  note: data.note || currentValues.note,
+                });
+                
+                const foundFields = [];
+                if (data.amount) foundFields.push(`Số tiền: ${data.amount.toLocaleString()}đ`);
+                if (data.note) foundFields.push(`Ghi chú: ${data.note}`);
+                
+                if (foundFields.length > 0) {
+                  toast.success("Đã tìm thấy thông tin!", {
+                    description: foundFields.join("\n"),
+                  });
+                } else {
+                  toast.info("Xử lý xong nhưng không tìm thấy thông tin cụ thể.");
+                }
+              }} />
+              
               <FormField
                 control={form.control}
                 name="type"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Loại giao dịch</FormLabel>
-                    <select
-                      {...field}
-                      className="flex h-10 w-full rounded-xl border border-input bg-muted/40 px-3 py-2 text-sm shadow-sm transition-all focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none appearance-none cursor-pointer"
+                    <select 
+                      value={field.value}
+                      className="flex h-10 w-full rounded-xl border border-input bg-muted/40 px-3 py-2 text-sm shadow-sm transition-all focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer"
+                      onChange={(e) => field.onChange(e.target.value)}
                     >
                       <option value="EXPENSE">💸 Chi tiêu</option>
                       <option value="INCOME">💰 Thu nhập</option>
@@ -231,9 +293,10 @@ export function FloatingActionButton() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{selectedType === "TRANSFER" ? "Từ Ví" : "Ví thanh toán"}</FormLabel>
-                    <select
-                      {...field}
-                      className="flex h-10 w-full rounded-xl border border-input bg-muted/40 px-3 py-2 text-sm shadow-sm transition-all focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none appearance-none cursor-pointer"
+                    <select 
+                      value={field.value}
+                      className="flex h-10 w-full rounded-xl border border-input bg-muted/40 px-3 py-2 text-sm shadow-sm transition-all focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer"
+                      onChange={(e) => field.onChange(e.target.value)}
                     >
                       <option value="">-- Chọn ví --</option>
                       {wallets.map(w => (
@@ -252,9 +315,10 @@ export function FloatingActionButton() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Đến Ví</FormLabel>
-                      <select
-                        {...field}
-                        className="flex h-10 w-full rounded-xl border border-input bg-muted/40 px-3 py-2 text-sm shadow-sm transition-all focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none appearance-none cursor-pointer"
+                      <select 
+                        value={field.value}
+                        className="flex h-10 w-full rounded-xl border border-input bg-muted/40 px-3 py-2 text-sm shadow-sm transition-all focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer"
+                        onChange={(e) => field.onChange(e.target.value)}
                       >
                         <option value="">-- Chọn ví nhận --</option>
                         {wallets.filter(w => w.id !== selectedWalletId).map(w => (
@@ -272,17 +336,15 @@ export function FloatingActionButton() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Danh mục</FormLabel>
-                      <select
-                        {...field}
-                        className="flex h-10 w-full rounded-xl border border-input bg-muted/40 px-3 py-2 text-sm shadow-sm transition-all focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none appearance-none cursor-pointer"
+                      <select 
+                        value={field.value}
+                        className="flex h-10 w-full rounded-xl border border-input bg-muted/40 px-3 py-2 text-sm shadow-sm transition-all focus:bg-background focus:ring-2 focus:ring-primary/20 outline-none cursor-pointer"
+                        onChange={(e) => field.onChange(e.target.value)}
                       >
                         <option value="">-- Chọn danh mục --</option>
                         {filteredCategories.map(c => (
                           <option key={c.id} value={c.id}>{c.name}</option>
                         ))}
-                        {filteredCategories.length === 0 && (
-                          <option disabled>Chưa có danh mục nào</option>
-                        )}
                       </select>
                       <FormMessage />
                     </FormItem>
@@ -304,12 +366,43 @@ export function FloatingActionButton() {
                 )}
               />
 
+              <FormField
+                control={form.control}
+                name="tagIds"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <TagSelector 
+                        availableTags={tags} 
+                        selectedTagIds={field.value || []} 
+                        onChange={field.onChange} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="pt-2">
+                <LocationInput 
+                  onLocationChange={(data) => {
+                    form.setValue("locationName", data.name);
+                    form.setValue("latitude", data.lat);
+                    form.setValue("longitude", data.lng);
+                  }}
+                  initialValue={form.getValues("locationName")}
+                  initialLat={form.getValues("latitude")}
+                  initialLng={form.getValues("longitude")}
+                />
+              </div>
+
               <Button type="submit" className="w-full" disabled={isPending}>
                 {isPending ? "Đang xử lý..." : "Lưu giao dịch"}
               </Button>
             </form>
           </Form>
         )}
+        </div>
       </DialogContent>
     </Dialog>
   );

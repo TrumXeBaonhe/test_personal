@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { ArrowLeftRight, Filter } from "lucide-react";
+import { ArrowLeftRight, Filter, MapPin } from "lucide-react";
 import { DeleteTransactionButton } from "@/components/delete-transaction-button";
 import { TransactionFilters } from "@/components/transaction-filters";
 import { PaginationNav } from "@/components/pagination-nav";
@@ -27,6 +27,10 @@ type TransactionWithRelations = Omit<Transaction, "amount"> & {
   wallet: SerializedWallet;
   toWallet: SerializedWallet | null;
   category: Category | null;
+  tags: { tag: { id: string, name: string, color: string | null } }[];
+  locationName: string | null;
+  latitude: number | null;
+  longitude: number | null;
 };
 export default async function TransactionsPage(props: {
   searchParams: Promise<{
@@ -55,7 +59,7 @@ export default async function TransactionsPage(props: {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
-      <FadeIn delay={0.1}>
+      <FadeIn delay={0.05}>
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-gradient">Quản lý giao dịch</h1>
@@ -65,7 +69,7 @@ export default async function TransactionsPage(props: {
         </div>
       </FadeIn>
 
-      <FadeIn delay={0.2} direction="up">
+      <FadeIn delay={0.1} direction="up">
         <div className="glass-card rounded-2xl border p-4">
           <div className="mb-4 flex items-center gap-2 font-semibold text-primary">
             <Filter className="h-4 w-4" />
@@ -75,7 +79,7 @@ export default async function TransactionsPage(props: {
         </div>
       </FadeIn>
 
-      <FadeIn delay={0.3} direction="up">
+      <FadeIn delay={0.15} direction="up">
         <div className="glass-card rounded-2xl border overflow-hidden">
           <Table>
             <TableHeader className="bg-muted/30">
@@ -95,7 +99,7 @@ export default async function TransactionsPage(props: {
                   </TableCell>
                 </TableRow>
               ) : (
-                transactions.map((t: TransactionWithRelations) => (
+                (transactions as unknown as TransactionWithRelations[]).map((t) => (
                   <TableRow key={t.id} className="hover:bg-primary/5 transition-colors group">
                     <TableCell className="font-medium text-xs md:text-sm">
                       {format(new Date(t.date), "dd/MM/yyyy")}
@@ -109,10 +113,30 @@ export default async function TransactionsPage(props: {
                               Chuyển khoản
                             </div>
                           ) : (
-                            t.category?.name || "N/A"
+                            <div className="flex flex-wrap items-center gap-2">
+                               {t.category?.name || "N/A"}
+                               {t.tags && t.tags.length > 0 && (
+                                 <div className="flex gap-1">
+                                   {t.tags.map(({ tag }) => (
+                                     <div 
+                                      key={tag.id} 
+                                      className="w-2 h-2 rounded-full" 
+                                      style={{ backgroundColor: tag.color || '#ccc' }}
+                                      title={tag.name}
+                                     />
+                                   ))}
+                                 </div>
+                               )}
+                            </div>
                           )}
                         </span>
                         {t.note && <span className="text-[10px] md:text-xs text-muted-foreground line-clamp-1">{t.note}</span>}
+                        {t.locationName && (
+                          <span className="text-[9px] md:text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                            <MapPin className="h-2.5 w-2.5" />
+                            {t.locationName}
+                          </span>
+                        )}
                         <div className="md:hidden mt-0.5">
                            <Badge variant="outline" className="text-[9px] px-1 py-0 h-4">{t.wallet?.name}</Badge>
                         </div>
@@ -154,7 +178,7 @@ export default async function TransactionsPage(props: {
         </div>
       </FadeIn>
 
-      <FadeIn delay={0.4}>
+      <FadeIn delay={0.2}>
         {totalPages > 1 && (
           <PaginationNav currentPage={page} totalPages={totalPages} />
         )}
