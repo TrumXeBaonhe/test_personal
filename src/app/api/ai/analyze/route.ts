@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 import { subDays, startOfDay } from "date-fns";
 import { NextResponse } from "next/server";
 
@@ -48,10 +48,9 @@ export async function GET() {
 
     const dataString = JSON.stringify(summary);
 
-    // 3. Gọi Gemini AI
-    const apiKey = process.env.GEMINI_API_KEY;
+    // 3. Kiểm tra API key
+    const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
-      // Mock advice if API key is missing
       return NextResponse.json({ 
         advice: [
           "💡 Mẹo: Bạn nên dành ra 20% thu nhập để tiết kiệm trước khi chi tiêu.",
@@ -61,25 +60,32 @@ export async function GET() {
       });
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    // 4. Gọi Groq AI (Llama 3.3 70B)
+    const groq = new Groq({ apiKey });
 
-    const prompt = `
-      Bạn là một chuyên gia cố vấn tài chính cá nhân thông minh. 
-      Dưới đây là tóm tắt chi tiêu của người dùng trong 30 ngày qua (dữ liệu dạng JSON, đơn vị tiền tệ do người dùng chọn):
-      ${dataString}
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content:
+            "Bạn là một chuyên gia cố vấn tài chính cá nhân thông minh. Trả lời ngắn gọn, súc tích, có tính hành động cao. Ngôn ngữ: Tiếng Việt.",
+        },
+        {
+          role: "user",
+          content: `Dưới đây là tóm tắt chi tiêu của người dùng trong 30 ngày qua (dạng JSON):
+${dataString}
 
-      Dựa trên dữ liệu này, hãy đưa ra đúng 3 lời khuyên tài chính ngắn gọn, súc tích và có tính hành động cao.
-      Mỗi lời khuyên không quá 25 từ. Tập trung vào việc tiết kiệm và tối ưu hóa dựa trên các danh mục chi tiêu nhiều nhất.
-      Trả về kết quả dưới dạng danh sách 3 dòng văn bản, không có số thứ tự, không có tiêu đề.
-      Ngôn ngữ: Tiếng Việt.
-    `;
+Dựa trên dữ liệu này, hãy đưa ra đúng 3 lời khuyên tài chính. Mỗi lời khuyên không quá 25 từ. Tập trung vào tiết kiệm và tối ưu hóa dựa trên các danh mục chi tiêu nhiều nhất. Trả về danh sách 3 dòng văn bản, không có số thứ tự, không có tiêu đề.`,
+        },
+      ],
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.7,
+      max_tokens: 300,
+    });
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const text = chatCompletion.choices[0]?.message?.content ?? "";
 
-    // Xử lý chuỗi văn bản trả về thành mảng
+    // 5. Xử lý chuỗi văn bản trả về thành mảng
     const advice = text
       .split('\n')
       .map(s => s.replace(/^[-*0-9.]+\s*/, '').trim())
@@ -87,7 +93,18 @@ export async function GET() {
       .slice(0, 3);
 
     return NextResponse.json({ advice });
-  } catch (error) {
+  } catch (error: unknown) {
+    // Xử lý lỗi quota / rate limit - không log để tránh spam console
+    const status = (error as { status?: number })?.status;
+    if (status === 429) {
+      return NextResponse.json({
+        advice: [
+          "Không thể kết nối với AI ngay lúc này. Hãy thử lại sau.",
+          "Kiểm định ngân sách hàng tuần giúp bạn tránh chi tiêu quá mức.",
+          "Hãy luôn duy trì một khoản dự phòng khẩn cấp tương đương 3-6 tháng chi tiêu.",
+        ],
+      });
+    }
     console.error("AI Analysis Error:", error);
     return NextResponse.json({ 
       advice: [
