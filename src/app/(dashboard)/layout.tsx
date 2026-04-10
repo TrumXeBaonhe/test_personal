@@ -2,6 +2,7 @@ import { Navbar } from "@/components/navbar";
 import { Sidebar } from "@/components/sidebar";
 import { FloatingActionButton } from "@/components/fab";
 import { PageTransition } from "@/components/page-transition";
+import { ChatWidget } from "@/components/ai-chat/chat-widget";
 
 export default function DashboardLayout({
   children,
@@ -19,6 +20,7 @@ export default function DashboardLayout({
           </PageTransition>
         </main>
         <FloatingActionButton />
+        <ChatWidget />
       </div>
     </div>
   );
