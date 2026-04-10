@@ -1,7 +1,7 @@
 import type { NextAuthConfig } from 'next-auth';
 
 // Danh sách public routes không cần auth
-const PUBLIC_ROUTES = ['/login', '/register'];
+const PUBLIC_ROUTES = ['/login', '/register', '/verify-otp'];
 // Route gốc sau khi đăng nhập
 const DEFAULT_LOGIN_REDIRECT = '/';
 

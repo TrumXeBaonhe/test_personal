@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Email không hợp lệ" }),
@@ -32,10 +33,7 @@ export default function LoginPage() {
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
@@ -50,6 +48,16 @@ export default function LoginPage() {
 
         if (result?.error) {
           setError("Email hoặc mật khẩu không chính xác.");
+          return;
+        }
+
+        // Đăng nhập thành công → kiểm tra IP
+        const ipCheck = await fetch("/api/auth/check-ip", { method: "POST" });
+        const { requiresOtp } = await ipCheck.json();
+
+        if (requiresOtp) {
+          // IP lạ → chuyển đến trang xác thực OTP (OTP đã được gửi bởi check-ip)
+          router.push("/verify-otp?purpose=login");
         } else {
           router.push("/");
           router.refresh();
@@ -92,17 +100,21 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Mật khẩu</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="******" {...field} disabled={isPending} />
+                      <Input type="password" placeholder="••••••••" {...field} disabled={isPending} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               {error && <div className="text-sm font-medium text-destructive">{error}</div>}
 
               <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? "Đang đăng nhập..." : "Đăng nhập"}
+                {isPending ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang đăng nhập...</>
+                ) : (
+                  "Đăng nhập"
+                )}
               </Button>
             </form>
           </Form>

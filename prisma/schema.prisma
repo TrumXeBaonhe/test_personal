@@ -22,8 +22,10 @@ model User {
   savingGoals           SavingGoal[]
   transactions          Transaction[]
   wallets               Wallet[]
-  debtsLoans           DebtLoan[]
-  tags                 Tag[]
+  debtsLoans            DebtLoan[]
+  tags                  Tag[]
+  otpTokens             OtpToken[]
+  knownIps              KnownIp[]
 
   @@index([email])
   @@map("users")
@@ -252,4 +254,35 @@ enum RecurringStatus {
   ACTIVE
   PAUSED
   COMPLETED
+}
+
+enum OtpPurpose {
+  LOGIN
+  PASSWORD_CHANGE
+}
+
+model OtpToken {
+  id        String     @id @default(cuid())
+  userId    String     @map("user_id")
+  codeHash  String     @map("code_hash")
+  purpose   OtpPurpose
+  expiresAt DateTime   @map("expires_at")
+  used      Boolean    @default(false)
+  createdAt DateTime   @default(now()) @map("created_at")
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("otp_tokens")
+}
+
+model KnownIp {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  ipAddress  String   @map("ip_address")
+  lastSeenAt DateTime @default(now()) @map("last_seen_at")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, ipAddress])
+  @@index([userId])
+  @@map("known_ips")
 }
