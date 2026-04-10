@@ -14,25 +14,23 @@ export async function POST(req: NextRequest) {
 
   const userId = session.user.id;
 
-  const ip =
+  // Lấy IP — trên localhost sẽ là "::1" hoặc "127.0.0.1"
+  const rawIp =
     req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
     req.headers.get("x-real-ip") ||
-    "unknown";
+    "127.0.0.1";
 
-  // IP không xác định được → không yêu cầu OTP (localhost/dev)
-  if (ip === "unknown" || ip === "::1" || ip === "127.0.0.1") {
-    await recordKnownIp(userId, ip);
-    return NextResponse.json({ requiresOtp: false });
-  }
+  // Chuẩn hoá localhost IPv6 → IPv4
+  const ip = rawIp === "::1" ? "127.0.0.1" : rawIp;
 
   const known = await isKnownIp(userId, ip);
   if (known) {
-    // Cập nhật lastSeenAt
+    // IP quen → cập nhật lastSeenAt, cho qua
     await recordKnownIp(userId, ip);
     return NextResponse.json({ requiresOtp: false });
   }
 
-  // IP lạ → gửi OTP
+  // IP lạ (kể cả localhost lần đầu) → gửi OTP
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { email: true, fullName: true },
@@ -40,6 +38,7 @@ export async function POST(req: NextRequest) {
 
   if (user) {
     const code = await createOtp(userId, "LOGIN");
+    // Trong dev: OTP sẽ in ra terminal thay vì gửi email
     await sendOtpEmail(user.email, code, "LOGIN", user.fullName ?? undefined);
   }
 
