@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { ShieldCheck, Mail, RefreshCw, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function VerifyOtpPage() {
+// Tách phần dùng useSearchParams ra component riêng
+function VerifyOtpContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const purpose = searchParams.get("purpose") ?? "LOGIN";
@@ -41,7 +42,6 @@ export default function VerifyOtpPage() {
     newCode[index] = value.slice(-1);
     setCode(newCode);
     setError("");
-    // Auto focus next
     if (value && index < 5) {
       inputsRef.current[index + 1]?.focus();
     }
@@ -115,7 +115,6 @@ export default function VerifyOtpPage() {
         setCanResend(false);
         setCode(["", "", "", "", "", ""]);
         inputsRef.current[0]?.focus();
-        // Restart countdown
         const timer = setInterval(() => {
           setCountdown((prev) => {
             if (prev <= 1) { setCanResend(true); clearInterval(timer); return 0; }
@@ -146,7 +145,6 @@ export default function VerifyOtpPage() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md relative"
       >
-        {/* Card */}
         <div className="relative">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-violet-500/30 to-cyan-500/30 rounded-3xl blur-md" />
           <div className="relative bg-card border border-border/40 rounded-3xl p-8 shadow-2xl backdrop-blur-xl">
@@ -254,5 +252,18 @@ export default function VerifyOtpPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+// Page export bọc trong Suspense — bắt buộc khi dùng useSearchParams()
+export default function VerifyOtpPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-violet-500" />
+      </div>
+    }>
+      <VerifyOtpContent />
+    </Suspense>
   );
 }
