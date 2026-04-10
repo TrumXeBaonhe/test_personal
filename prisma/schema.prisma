@@ -26,6 +26,8 @@ model User {
   tags                  Tag[]
   otpTokens             OtpToken[]
   knownIps              KnownIp[]
+  notifications         Notification[]
+  notificationPreference NotificationPreference?
 
   @@index([email])
   @@map("users")
@@ -259,6 +261,46 @@ enum RecurringStatus {
 enum OtpPurpose {
   LOGIN
   PASSWORD_CHANGE
+}
+
+enum NotificationType {
+  DAILY_INPUT_REMINDER
+  BUDGET_WARNING
+  BUDGET_EXCEEDED
+  RECURRING_DUE
+}
+
+model Notification {
+  id         String           @id @default(cuid())
+  userId     String           @map("user_id")
+  type       NotificationType
+  title      String
+  message    String
+  link       String?
+  isRead     Boolean          @default(false) @map("is_read")
+  readAt     DateTime?        @map("read_at")
+  dedupeKey  String           @unique @map("dedupe_key")
+  createdAt  DateTime         @default(now()) @map("created_at")
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+model NotificationPreference {
+  id                      String   @id @default(cuid())
+  userId                  String   @unique @map("user_id")
+  dailyInputEnabled       Boolean  @default(true) @map("daily_input_enabled")
+  budgetAlertEnabled      Boolean  @default(true) @map("budget_alert_enabled")
+  recurringReminderEnabled Boolean @default(true) @map("recurring_reminder_enabled")
+  dailyReminderHour       Int      @default(20) @map("daily_reminder_hour")
+  recurringReminderDays   Int      @default(2) @map("recurring_reminder_days")
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_preferences")
 }
 
 model OtpToken {
