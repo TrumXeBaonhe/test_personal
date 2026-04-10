@@ -8,9 +8,13 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-function getOtpEmailHtml(code: string, purpose: "LOGIN" | "PASSWORD_CHANGE", name?: string) {
+function getOtpEmailHtml(code: string, purpose: "LOGIN" | "PASSWORD_CHANGE" | "PASSWORD_RESET", name?: string) {
   const purposeText =
-    purpose === "LOGIN" ? "xác nhận đăng nhập từ thiết bị mới" : "xác nhận đổi mật khẩu";
+    purpose === "LOGIN"
+      ? "xác nhận đăng nhập từ thiết bị mới"
+      : purpose === "PASSWORD_CHANGE"
+      ? "xác nhận đổi mật khẩu"
+      : "khôi phục mật khẩu tài khoản";
   const purposeIcon = purpose === "LOGIN" ? "🔐" : "🔑";
 
   return `<!DOCTYPE html>
@@ -69,13 +73,15 @@ function getOtpEmailHtml(code: string, purpose: "LOGIN" | "PASSWORD_CHANGE", nam
 export async function sendOtpEmail(
   to: string,
   code: string,
-  purpose: "LOGIN" | "PASSWORD_CHANGE",
+  purpose: "LOGIN" | "PASSWORD_CHANGE" | "PASSWORD_RESET",
   name?: string
 ) {
   const subject =
     purpose === "LOGIN"
       ? `[SpendWise] Mã OTP đăng nhập thiết bị mới: ${code}`
-      : `[SpendWise] Mã OTP xác nhận đổi mật khẩu: ${code}`;
+      : purpose === "PASSWORD_CHANGE"
+      ? `[SpendWise] Mã OTP xác nhận đổi mật khẩu: ${code}`
+      : `[SpendWise] Mã OTP khôi phục mật khẩu: ${code}`;
 
   // DEV MODE: In mã ra console để test mà không cần email
   if (process.env.NODE_ENV === "development") {

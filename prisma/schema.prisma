@@ -261,6 +261,7 @@ enum RecurringStatus {
 enum OtpPurpose {
   LOGIN
   PASSWORD_CHANGE
+  PASSWORD_RESET
 }
 
 enum NotificationType {

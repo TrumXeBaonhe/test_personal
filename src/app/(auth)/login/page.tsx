@@ -233,6 +233,14 @@ export default function LoginPage() {
                             <Input type="password" placeholder="••••••••" {...field} disabled={isPending} />
                           </FormControl>
                           <FormMessage />
+                          <div className="flex justify-end">
+                            <Link
+                              href="/forgot-password"
+                              className="text-xs text-primary hover:underline font-medium"
+                            >
+                              Quên mật khẩu?
+                            </Link>
+                          </div>
                         </FormItem>
                       )}
                     />
