@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { exportTransactionsToExcel, getCashFlowTrend } from "@/app/actions/report-actions";
 import { TrendsChart } from "@/components/dashboard/trends-chart";
-
+import { getAIInsights, type AIInsights } from "@/app/actions/ai-actions";
 import { AdvancedAnalysis } from "@/components/reports/advanced-analysis";
 import { getDashboardStats } from "@/app/actions/dashboard-actions";
 import { FadeIn } from "@/components/fade-in";
@@ -43,18 +43,24 @@ export default function ReportsPage() {
   const [stats, setStats] = useState<DashboardStatsResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
+  const [aiInsights, setAiInsights] = useState<AIInsights | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState(true);
 
   const fetchData = async () => {
     setIsLoading(true);
-    const [trendRes, statsRes] = await Promise.all([
+    setIsAiLoading(true);
+    const [trendRes, statsRes, aiRes] = await Promise.all([
       getCashFlowTrend(),
       getDashboardStats(),
+      getAIInsights(),
     ]);
 
     if (trendRes.success) setTrendData(trendRes.data || []);
     if (statsRes) setStats(statsRes);
+    if (aiRes.success) setAiInsights(aiRes.data ?? null);
     
     setIsLoading(false);
+    setIsAiLoading(false);
   };
 
   useEffect(() => {
@@ -195,7 +201,16 @@ export default function ReportsPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="p-0 text-xs text-muted-foreground leading-relaxed font-medium">
-                  Dựa trên phân tích 3 tháng qua, bạn có thể tiết kiệm thêm <span className="text-primary font-bold">12%</span> nếu giảm 15% chi tiêu cho &quot;Ăn uống&quot;. Hệ thống nhận thấy bạn thường xuyên chi tiêu cao vào cuối tuần.
+                  {isAiLoading ? (
+                    <div className="space-y-2">
+                      <div className="h-3 w-full bg-primary/10 animate-pulse rounded" />
+                      <div className="h-3 w-4/5 bg-primary/10 animate-pulse rounded" />
+                    </div>
+                  ) : aiInsights?.savings ? (
+                    aiInsights.savings
+                  ) : (
+                    "Hãy nạp tiền vào ví để FinBot có thể bắt đầu phân tích và đưa ra gợi ý tiết kiệm cho bạn."
+                  )}
                 </CardContent>
               </Card>
             </FadeIn>
@@ -211,7 +226,16 @@ export default function ReportsPage() {
                    </div>
                 </CardHeader>
                 <CardContent className="p-0 text-xs text-muted-foreground leading-relaxed font-medium">
-                  Với đà chi tiêu hiện tại, dự kiến số dư tài sản của bạn sẽ tăng thêm <span className="text-emerald-600 font-black">5.000.000đ</span> vào cuối tháng tới. Bạn đang đi đúng hướng để mua chiếc iPhone mới!
+                  {isAiLoading ? (
+                    <div className="space-y-2">
+                       <div className="h-3 w-full bg-emerald-500/10 animate-pulse rounded" />
+                       <div className="h-3 w-3/4 bg-emerald-500/10 animate-pulse rounded" />
+                    </div>
+                  ) : aiInsights?.goals ? (
+                    aiInsights.goals
+                  ) : (
+                    "Lập kế hoạch tiết kiệm ngay hôm nay để sớm đạt được những món đồ mơ ước của bạn!"
+                  )}
                 </CardContent>
               </Card>
             </FadeIn>
