@@ -14,6 +14,7 @@ model User {
   fullName              String?                @map("full_name")
   currency              String                 @default("VND")
   avatarUrl             String?                @map("avatar_url")
+  accountNumber         String                 @unique @map("account_number")
   createdAt             DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt             DateTime               @updatedAt @map("updated_at") @db.Timestamptz(6)
   budgets               Budget[]
@@ -28,8 +29,12 @@ model User {
   knownIps              KnownIp[]
   notifications         Notification[]
   notificationPreference NotificationPreference?
+  bankAccounts          BankAccount[]
+  sentTransfers         Transfer[]            @relation("SentTransfers")
+  receivedTransfers     Transfer[]            @relation("ReceivedTransfers")
 
   @@index([email])
+  @@index([accountNumber])
   @@map("users")
 }
 
@@ -330,4 +335,36 @@ model KnownIp {
   @@unique([userId, ipAddress])
   @@index([userId])
   @@map("known_ips")
+}
+
+model BankAccount {
+  id             String   @id @default(cuid())
+  userId         String   @unique @map("user_id")
+  accountNumber  String   @map("account_number")
+  qrCode         String   @db.Text
+  qrData         String   @db.Text
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("bank_accounts")
+}
+
+model Transfer {
+  id               String   @id @default(cuid())
+  fromUserId       String   @map("from_user_id")
+  toUserId         String   @map("to_user_id")
+  amount           Decimal  @db.Decimal(19, 4)
+  note             String?
+  status           String   @default("completed")
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  fromUser         User     @relation("SentTransfers", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser           User     @relation("ReceivedTransfers", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@index([fromUserId])
+  @@index([toUserId])
+  @@index([createdAt])
+  @@map("transfers")
 }

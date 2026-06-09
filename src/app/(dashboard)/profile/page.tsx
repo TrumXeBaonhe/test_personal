@@ -1,10 +1,13 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { User, Mail, Wallet, CreditCard } from "lucide-react";
+import { User, Mail, Wallet, CreditCard, QrCode } from "lucide-react";
 import { ProfileForm } from "@/components/profile/profile-form";
 import { SecuritySettings } from "@/components/profile/security-settings";
+import { AvatarUpload } from "@/components/profile/avatar-upload";
+import { QRGenerator } from "@/components/qr/qr-generator";
 import { FadeIn } from "@/components/fade-in";
+import { ensureAccountNumber } from "@/app/actions/profile-actions";
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -23,6 +26,14 @@ export default async function ProfilePage() {
   });
 
   if (!user) return null;
+
+  let accountNumber = user.accountNumber;
+  if (!accountNumber) {
+    const result = await ensureAccountNumber();
+    if (result.success && result.accountNumber) {
+      accountNumber = result.accountNumber;
+    }
+  }
 
   return (
     <div className="flex flex-col space-y-8 pb-10">
@@ -92,15 +103,55 @@ export default async function ProfilePage() {
         </FadeIn>
       </div>
 
-      <FadeIn delay={0.4}>
-         <Card className="glass-card border-none bg-primary/5">
+      {/* Avatar Upload Section */}
+      <FadeIn delay={0.35}>
+        <Card className="glass-card border-none bg-primary/5">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold flex items-center gap-2">
+              <User className="h-5 w-5" />
+              Ảnh đại diện
+            </CardTitle>
+            <CardDescription>Tải lên hoặc cập nhật ảnh đại diện của bạn</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AvatarUpload 
+              currentAvatarUrl={user.avatarUrl}
+              onUploadSuccess={() => {}}
+            />
+          </CardContent>
+        </Card>
+      </FadeIn>
+
+      {/* QR Code Section */}
+      {accountNumber && (
+        <FadeIn delay={0.4}>
+          <Card className="glass-card border-none bg-primary/5">
             <CardHeader>
-              <CardTitle className="text-lg font-bold">Bảo mật & Quyền riêng tư</CardTitle>
+              <CardTitle className="text-lg font-bold flex items-center gap-2">
+                <QrCode className="h-5 w-5" />
+                Mã QR thanh toán
+              </CardTitle>
+              <CardDescription>Chia sẻ mã QR này để nhận chuyển khoản từ người khác</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
-               <SecuritySettings />
+            <CardContent>
+              <QRGenerator 
+                accountNumber={accountNumber} 
+                userName={user.fullName || "Người dùng"}
+              />
             </CardContent>
-         </Card>
+          </Card>
+        </FadeIn>
+      )}
+
+      <FadeIn delay={0.45}>
+        <Card className="glass-card border-none bg-primary/5">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold">Bảo mật & Quyền riêng tư</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <SecuritySettings />
+          </CardContent>
+        </Card>
       </FadeIn>
     </div>
   );

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { generateAccountNumber } from "@/lib/account-utils";
 
 const registerSchema = z.object({
   fullName: z.string().min(1, "Họ và tên không được để trống"),
@@ -37,6 +38,7 @@ export async function POST(req: Request) {
           email,
           fullName,
           passwordHash: hashedPassword,
+          accountNumber: generateAccountNumber(),
         },
       });
 

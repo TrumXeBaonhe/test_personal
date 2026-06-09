@@ -7,6 +7,8 @@ import { ActionResult, actionSuccess, actionError } from "@/lib/action-types";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { verifyOtp } from "@/lib/otp";
+import { generateAccountNumber } from "@/lib/account-utils";
+import QRCode from "qrcode";
 
 const profileSchema = z.object({
   fullName: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
@@ -86,6 +88,37 @@ export async function updatePassword(
 
     revalidatePath("/profile");
     return actionSuccess();
+  } catch (error) {
+    return actionError(error);
+  }
+}
+
+export async function ensureAccountNumber(): Promise<ActionResult & { accountNumber?: string }> {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) return { success: false, error: "Unauthorized" };
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { accountNumber: true },
+    });
+
+    if (!user) return { success: false, error: "User not found" };
+
+    if (user.accountNumber) {
+      return { success: true, accountNumber: user.accountNumber };
+    }
+
+    const accountNumber = generateAccountNumber();
+
+    const updatedUser = await prisma.user.update({
+      where: { id: session.user.id },
+      data: { accountNumber },
+      select: { accountNumber: true },
+    });
+
+    revalidatePath("/profile");
+    return { success: true, accountNumber: updatedUser.accountNumber };
   } catch (error) {
     return actionError(error);
   }
