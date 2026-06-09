@@ -25,7 +25,8 @@ export const metadata: Metadata = {
     startupImage: "/icons/icon-512x512.png",
   },
   icons: [
-    { rel: "icon", url: "/favicon-32.png", sizes: "32x32" },
+    { rel: "icon", url: "/favicon.ico" },
+    { rel: "icon", url: "/icon.png", type: "image/png", sizes: "any" },
     { rel: "apple-touch-icon", url: "/icons/apple-touch-icon.png", sizes: "180x180" },
   ],
 };
