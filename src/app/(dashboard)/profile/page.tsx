@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { User, Mail, Wallet, CreditCard, QrCode } from "lucide-react";
+import Image from "next/image";
 import { ProfileForm } from "@/components/profile/profile-form";
 import { SecuritySettings } from "@/components/profile/security-settings";
 import { AvatarUploadWrapper } from "@/components/profile/avatar-upload-wrapper";
@@ -50,11 +51,21 @@ export default async function ProfilePage() {
         <FadeIn delay={0.2} direction="left" className="md:col-span-1">
           <Card className="glass-card border-none overflow-hidden h-full">
             <div className="h-24 bg-gradient-to-r from-primary/20 to-primary/5 w-full relative">
-               <div className="absolute -bottom-10 left-6">
-                 <div className="h-20 w-20 rounded-3xl bg-card border-4 border-background flex items-center justify-center shadow-xl">
-                   <User className="h-10 w-10 text-primary" />
-                 </div>
-               </div>
+              <div className="absolute -bottom-10 left-6">
+                <div className="h-20 w-20 rounded-3xl bg-card border-4 border-background flex items-center justify-center shadow-xl overflow-hidden">
+                  {user.avatarUrl ? (
+                    <Image
+                      src={user.avatarUrl}
+                      alt="Avatar"
+                      width={80}
+                      height={80}
+                      className="object-cover"
+                    />
+                  ) : (
+                    <User className="h-10 w-10 text-primary" />
+                  )}
+                </div>
+              </div>
             </div>
             <CardHeader className="pt-14 pb-4">
               <CardTitle className="text-xl font-bold">{user.fullName || "Người dùng SpendWise"}</CardTitle>
@@ -63,24 +74,24 @@ export default async function ProfilePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-               <div className="p-3 bg-muted/40 rounded-2xl flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-xl">
-                      <Wallet className="h-4 w-4 text-primary" />
-                    </div>
-                    <span className="text-sm font-medium">Số ví</span>
+              <div className="p-3 bg-muted/40 rounded-2xl flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-xl">
+                    <Wallet className="h-4 w-4 text-primary" />
                   </div>
-                  <span className="font-bold">{user._count.wallets}</span>
-               </div>
-               <div className="p-3 bg-muted/40 rounded-2xl flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-emerald-500/10 rounded-xl">
-                      <CreditCard className="h-4 w-4 text-emerald-500" />
-                    </div>
-                    <span className="text-sm font-medium">Giao dịch</span>
+                  <span className="text-sm font-medium">Số ví</span>
+                </div>
+                <span className="font-bold">{user._count.wallets}</span>
+              </div>
+              <div className="p-3 bg-muted/40 rounded-2xl flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-emerald-500/10 rounded-xl">
+                    <CreditCard className="h-4 w-4 text-emerald-500" />
                   </div>
-                  <span className="font-bold">{user._count.transactions}</span>
-               </div>
+                  <span className="text-sm font-medium">Giao dịch</span>
+                </div>
+                <span className="font-bold">{user._count.transactions}</span>
+              </div>
             </CardContent>
           </Card>
         </FadeIn>
