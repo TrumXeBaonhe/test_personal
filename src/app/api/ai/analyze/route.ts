@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import Groq from "groq-sdk";
 import { subDays, startOfDay } from "date-fns";
 import { NextResponse } from "next/server";
+import { isGroqAuthError } from "@/lib/ai-service";
 
 export async function GET() {
   const session = await auth();
@@ -94,6 +95,16 @@ Dựa trên dữ liệu này, hãy đưa ra đúng 3 lời khuyên tài chính. 
 
     return NextResponse.json({ advice });
   } catch (error: unknown) {
+    if (isGroqAuthError(error)) {
+      return NextResponse.json({
+        advice: [
+          "AI hiện chưa khả dụng do khóa API đã hết hạn. Hãy cập nhật GROQ_API_KEY để bật phân tích tự động.",
+          "Trong lúc chờ, hãy ưu tiên theo dõi các khoản chi lớn nhất để kiểm soát ngân sách.",
+          "Đặt một mục tiêu tiết kiệm cố định mỗi tháng để giữ đà tài chính ổn định.",
+        ],
+      });
+    }
+
     // Xử lý lỗi quota / rate limit - không log để tránh spam console
     const status = (error as { status?: number })?.status;
     if (status === 429) {

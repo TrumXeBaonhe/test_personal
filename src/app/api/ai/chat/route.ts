@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { getFinancialContext, getSystemPrompt, callGroq } from "@/lib/ai-service";
+import { getFinancialContext, getSystemPrompt, callGroq, isGroqAuthError } from "@/lib/ai-service";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -29,6 +29,12 @@ export async function POST(req: NextRequest) {
       const reply = completion.choices[0]?.message?.content ?? "Xin lỗi, tôi không thể trả lời lúc này.";
       return NextResponse.json({ reply });
     } catch (apiError: any) {
+      if (isGroqAuthError(apiError)) {
+        return NextResponse.json({
+          reply: "AI hiện chưa khả dụng do khóa API đã hết hạn. Hãy cập nhật GROQ_API_KEY để tiếp tục trò chuyện.",
+        });
+      }
+
       if (apiError?.status === 429) {
         return NextResponse.json({
           reply: "⏳ Đang bận xử lý quá nhiều yêu cầu. Hãy thử lại sau vài giây nhé!",

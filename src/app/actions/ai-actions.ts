@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { getFinancialContext, getSystemPrompt, callGroq } from "@/lib/ai-service";
+import { getFinancialContext, getSystemPrompt, callGroq, isGroqAuthError } from "@/lib/ai-service";
 import { actionError, actionSuccess, type ActionResult } from "@/lib/action-types";
 
 export interface AIInsights {
@@ -51,6 +51,13 @@ Yêu cầu output dạng JSON: {"savings": "...", "goals": "..."}`;
         });
       }
     } catch (apiError) {
+      if (isGroqAuthError(apiError)) {
+        return actionSuccess({
+          savings: "AI hiện chưa khả dụng do khóa API đã hết hạn. Hãy cập nhật GROQ_API_KEY để tiếp tục nhận phân tích tự động.",
+          goals: `Tổng tài sản hiện có: ${context.totalBalance.toLocaleString("vi-VN")}đ. Hãy tiếp tục theo dõi mục tiêu tiết kiệm của bạn.`,
+        });
+      }
+
       console.error("Groq API error in getAIInsights:", apiError);
     }
 

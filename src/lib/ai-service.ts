@@ -135,3 +135,19 @@ export async function callGroq(messages: { role: string; content: string }[]) {
     max_tokens: 500,
   });
 }
+
+export function isGroqAuthError(error: unknown) {
+  const groqError = error as {
+    status?: number;
+    code?: string;
+    error?: { code?: string; message?: string };
+  };
+
+  return (
+    groqError?.status === 401 ||
+    groqError?.code === "expired_api_key" ||
+    groqError?.code === "invalid_api_key" ||
+    groqError?.error?.code === "expired_api_key" ||
+    groqError?.error?.code === "invalid_api_key"
+  );
+}
