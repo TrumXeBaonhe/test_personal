@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { User, Mail, Wallet, CreditCard, QrCode } from "lucide-react";
 import { ProfileForm } from "@/components/profile/profile-form";
 import { SecuritySettings } from "@/components/profile/security-settings";
-import { AvatarUpload } from "@/components/profile/avatar-upload";
+import { AvatarUploadWrapper } from "@/components/profile/avatar-upload-wrapper";
 import { QRGenerator } from "@/components/qr/qr-generator";
 import { FadeIn } from "@/components/fade-in";
 import { ensureAccountNumber } from "@/app/actions/profile-actions";
@@ -114,9 +114,8 @@ export default async function ProfilePage() {
             <CardDescription>Tải lên hoặc cập nhật ảnh đại diện của bạn</CardDescription>
           </CardHeader>
           <CardContent>
-            <AvatarUpload 
+            <AvatarUploadWrapper 
               currentAvatarUrl={user.avatarUrl}
-              onUploadSuccess={() => {}}
             />
           </CardContent>
         </Card>
