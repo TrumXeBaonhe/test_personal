@@ -102,16 +102,12 @@ Truy cập ứng dụng tại địa chỉ dev hoặc production của bạn.
 
 ---
 
-## 👥 Nhóm phát triển (The Team)
+## 👥 Nhóm phát triển (The One)
 
-Dự án được khởi tạo và xây dựng kiến trúc bởi **[Tên Của Bạn]**.
 Các thành viên tiếp tục phát triển:
-1.  **Thành viên 1**
-2.  **Thành viên 2**
-3.  **Thành viên 3**
-4.  **Thành viên 4**
+1.  **Bao Ngoc Thien Bao**
 
 ---
 
 ## 📄 Giấy phép (License)
-Dự án được phát triển nội bộ cho mục đích học tập và công việc nhóm.
+Dự án được phát triển nội bộ cho mục đích học tập.
