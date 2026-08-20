@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
 import { Providers } from "@/components/providers";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -56,6 +57,7 @@ export default function RootLayout({
           {children}
           <Toaster richColors position="top-right" />
         </Providers>
+        <SpeedInsights />
       </body>
     </html>
   );
