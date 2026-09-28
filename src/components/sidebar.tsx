@@ -36,8 +36,8 @@ export function Sidebar() {
 
   return (
     <aside className="fixed top-20 z-30 hidden h-[calc(100vh-5rem)] w-full shrink-0 md:sticky md:block md:w-24">
-      <div className="h-full overflow-auto px-3 py-5 lg:py-6">
-        <div className="flex h-full flex-col items-center gap-3 rounded-[24px] border border-border/60 bg-card/60 p-2.5 shadow-[0_10px_30px_-18px_rgba(76,29,149,0.18)] backdrop-blur-xl">
+      <div className="h-full overflow-y-auto overflow-x-visible px-3 py-5 lg:py-6">
+        <div className="flex min-h-full flex-col items-center gap-3 rounded-[24px] border border-border/60 bg-card/60 p-2.5 shadow-[0_10px_30px_-18px_rgba(76,29,149,0.18)] backdrop-blur-xl">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/15 to-cyan-500/10 text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground">
             SW
           </div>

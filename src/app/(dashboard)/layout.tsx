@@ -14,7 +14,7 @@ export default function DashboardLayout({
       <Navbar />
       <div className="container mx-auto flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] lg:grid-cols-[240px_minmax(0,1fr)]">
         <Sidebar />
-        <main className="relative py-6 lg:py-8 lg:px-8 px-4 w-full h-full overflow-hidden">
+        <main className="relative h-full w-full overflow-x-hidden px-4 py-6 lg:px-8 lg:py-8">
           <PageTransition>
             {children}
           </PageTransition>
