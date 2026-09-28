@@ -3,22 +3,37 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { generateAccountNumber } from "@/lib/account-utils";
+import { getClientIp, normalizeEmail, checkRateLimit, sanitizeText, validateSameOrigin } from "@/lib/security";
 
 const registerSchema = z.object({
-  fullName: z.string().min(1, "Họ và tên không được để trống"),
-  email: z.string().email("Email không hợp lệ"),
-  password: z.string().min(6, "Mật khẩu phải từ 6 ký tự trở lên"),
+  fullName: z.string().trim().min(1, "Họ và tên không được để trống").max(80),
+  email: z.string().trim().email("Email không hợp lệ").max(255),
+  password: z.string().min(8, "Mật khẩu phải từ 8 ký tự trở lên").max(128),
 });
 
 export async function POST(req: Request) {
-  console.log("POST /api/auth/register - Request received");
   try {
+    if (!validateSameOrigin(req as Request)) {
+      return NextResponse.json({ message: "Forbidden origin" }, { status: 403 });
+    }
+
     const body = await req.json();
-    console.log("Request body:", { ...body, password: "[REDACTED]" });
+    const ip = getClientIp(req as Request);
+    const rateLimit = checkRateLimit(`register:${ip}`, 5, 60_000);
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { message: "Quá nhiều yêu cầu. Vui lòng thử lại sau." },
+        { status: 429 }
+      );
+    }
+
     const { fullName, email, password } = registerSchema.parse(body);
+    const normalizedEmail = normalizeEmail(email);
+    const safeFullName = sanitizeText(fullName, 80);
 
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
@@ -32,11 +47,10 @@ export async function POST(req: Request) {
 
     // Sử dụng $transaction để bọc toàn bộ khối cập nhật nhằm đảm bảo tính toàn vẹn (Integrity)
     const newUser = await prisma.$transaction(async (tx) => {
-      // 1. Tạo User
       const user = await tx.user.create({
         data: {
-          email,
-          fullName,
+          email: normalizedEmail,
+          fullName: safeFullName,
           passwordHash: hashedPassword,
           accountNumber: generateAccountNumber(),
         },

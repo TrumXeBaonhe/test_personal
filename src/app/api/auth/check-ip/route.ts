@@ -3,24 +3,23 @@ import { isKnownIp, createOtp, recordKnownIp } from "@/lib/otp";
 import { sendOtpEmail } from "@/lib/email";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { checkRateLimit, getClientIp } from "@/lib/security";
 
-// POST /api/auth/check-ip
-// Gọi ngay sau khi đăng nhập thành công để kiểm tra IP
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const clientIp = getClientIp(req) || "127.0.0.1";
+  const rateLimit = checkRateLimit(`check-ip:${session.user.id}`, 20, 60_000);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: "Quá nhiều yêu cầu. Vui lòng thử lại sau." }, { status: 429 });
+  }
+
   const userId = session.user.id;
+  const rawIp = clientIp === "unknown" ? "127.0.0.1" : clientIp;
 
-  // Lấy IP — trên localhost sẽ là "::1" hoặc "127.0.0.1"
-  const rawIp =
-    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
-    req.headers.get("x-real-ip") ||
-    "127.0.0.1";
-
-  // Chuẩn hoá localhost IPv6 → IPv4
   const ip = rawIp === "::1" ? "127.0.0.1" : rawIp;
 
   const known = await isKnownIp(userId, ip);

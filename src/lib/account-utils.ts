@@ -1,7 +1,7 @@
+import { randomInt } from "crypto";
+
 export function generateAccountNumber(): string {
-  const randomDigits = Math.floor(Math.random() * 1000000000000)
-    .toString()
-    .padStart(12, "0");
+  const randomDigits = randomInt(0, 1_000_000_000_000).toString().padStart(12, "0");
   return `VN${randomDigits}`;
 }
 

@@ -83,20 +83,18 @@ export async function sendOtpEmail(
       ? `[SpendWise] Mã OTP xác nhận đổi mật khẩu: ${code}`
       : `[SpendWise] Mã OTP khôi phục mật khẩu: ${code}`;
 
-  // DEV MODE: In mã ra console để test mà không cần email
   if (process.env.NODE_ENV === "development") {
     console.log("\n");
     console.log("===============================");
     console.log(`✉️  OTP EMAIL (DEV MODE)`);
     console.log(`To     : ${to}`);
     console.log(`Purpose: ${purpose}`);
-    console.log(`\n⭐ MÃ OTP: ${code} ⭐`);
+    console.log(`\n⭐ MÃ OTP: ${code.slice(0, 2)}${"*".repeat(code.length - 2)} ⭐`);
     console.log("===============================");
     console.log("\n");
-    return; // Không gửi email thật trong dev
+    return;
   }
 
-  // PRODUCTION: Gửi email thật qua Gmail SMTP
   try {
     await transporter.sendMail({
       from: `"SpendWise Security" <${process.env.GMAIL_USER}>`,
@@ -105,9 +103,7 @@ export async function sendOtpEmail(
       html: getOtpEmailHtml(code, purpose, name),
     });
   } catch (err) {
-    // Fallback: nếu gửi thất bại, vẫn log ra console để không block flow
-    console.error("Send OTP email failed:", err);
-    console.log(`[FALLBACK] OTP for ${to}: ${code}`);
-    throw err; // Ré-throw để caller biết có lỗi
+    console.error("Send OTP email failed:", err instanceof Error ? err.message : err);
+    throw err;
   }
 }

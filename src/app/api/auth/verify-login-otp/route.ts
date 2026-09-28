@@ -2,19 +2,28 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { verifyOtp, recordKnownIp } from "@/lib/otp";
 import { OtpPurpose } from "@prisma/client";
+import { checkRateLimit, getClientIp, normalizeEmail } from "@/lib/security";
 
-// POST /api/auth/verify-login-otp
-// Xác minh OTP đăng nhập — KHÔNG yêu cầu session (pre-auth)
 export async function POST(req: NextRequest) {
   try {
     const { email, otp } = await req.json();
-    if (!email || !otp) {
+    const normalizedEmail = typeof email === "string" ? normalizeEmail(email) : "";
+
+    if (!normalizedEmail || !otp) {
       return NextResponse.json({ error: "Thiếu thông tin" }, { status: 400 });
     }
 
-    // Tìm user bằng email
+    const clientIp = getClientIp(req);
+    const rateLimit = checkRateLimit(`verify-login-otp:${clientIp}`, 10, 60_000);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Quá nhiều yêu cầu. Vui lòng thử lại sau." },
+        { status: 429 }
+      );
+    }
+
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
       select: { id: true },
     });
 
@@ -33,8 +42,8 @@ export async function POST(req: NextRequest) {
       req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
       req.headers.get("x-real-ip") ||
       "127.0.0.1";
-    const ip = rawIp === "::1" ? "127.0.0.1" : rawIp;
-    await recordKnownIp(user.id, ip);
+    const verifiedIp = rawIp === "::1" ? "127.0.0.1" : rawIp;
+    await recordKnownIp(user.id, verifiedIp);
 
     return NextResponse.json({ success: true });
   } catch (error) {

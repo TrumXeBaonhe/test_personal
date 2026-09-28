@@ -22,9 +22,14 @@ function calculateNextDate(currentDate: Date, interval: "DAILY" | "WEEKLY" | "MO
 
 export async function GET(request: Request) {
     try {
-        // Auth check bằng token
         const authHeader = request.headers.get("authorization");
-        const cronSecret = process.env.CRON_SECRET || 'dev_secret';
+        const cronSecret = process.env.CRON_SECRET;
+
+        if (!cronSecret) {
+            console.error("CRON_SECRET is missing. Refusing to process recurring transactions.");
+            return NextResponse.json({ error: "Server misconfiguration" }, { status: 500 });
+        }
+
         if (authHeader !== `Bearer ${cronSecret}`) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }

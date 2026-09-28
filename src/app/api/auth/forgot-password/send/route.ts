@@ -3,19 +3,28 @@ import { sendOtpEmail } from "@/lib/email";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { OtpPurpose } from "@prisma/client";
+import { checkRateLimit, getClientIp, normalizeEmail } from "@/lib/security";
 
-// POST /api/auth/forgot-password/send
-// Gửi mã OTP khôi phục mật khẩu - KHÔNG yêu cầu session
 export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json();
-    if (!email) {
-      return NextResponse.json({ error: "Vui lòng nhập email" }, { status: 400 });
+    const normalizedEmail = typeof email === "string" ? normalizeEmail(email) : "";
+
+    if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      return NextResponse.json({ error: "Vui lòng nhập email hợp lệ" }, { status: 400 });
     }
 
-    // Kiểm tra user có tồn tại không
+    const ip = getClientIp(req);
+    const rateLimit = checkRateLimit(`forgot-password:${ip}`, 5, 60_000);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Quá nhiều yêu cầu. Vui lòng thử lại sau." },
+        { status: 429 }
+      );
+    }
+
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
       select: { id: true, email: true, fullName: true },
     });
 

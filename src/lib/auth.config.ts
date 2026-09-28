@@ -1,15 +1,28 @@
 import type { NextAuthConfig } from 'next-auth';
+import { randomBytes } from 'node:crypto';
 
-// Danh sách public routes không cần auth
 const PUBLIC_ROUTES = ['/login', '/register', '/verify-otp', '/forgot-password', '/reset-password'];
-// Route gốc sau khi đăng nhập
 const DEFAULT_LOGIN_REDIRECT = '/';
+
+function getAuthSecret() {
+  const configuredSecret = process.env.AUTH_SECRET;
+
+  if (configuredSecret && configuredSecret.length >= 32) {
+    return configuredSecret;
+  }
+
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('AUTH_SECRET is required in production and must be at least 32 characters long.');
+  }
+
+  return randomBytes(32).toString('hex');
+}
 
 export const authConfig = {
   pages: {
     signIn: '/login',
   },
-  secret: process.env.AUTH_SECRET || 'a_secret_key_32_chars_long_123456',
+  secret: getAuthSecret(),
   trustHost: true,
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {

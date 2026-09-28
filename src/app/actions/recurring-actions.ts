@@ -195,10 +195,15 @@ interface CronResult {
 
 export async function triggerCronManually(): Promise<ActionResult<CronResult>> {
   try {
+    const cronSecret = process.env.CRON_SECRET;
+    if (!cronSecret) {
+      throw new Error("CRON_SECRET is not configured.");
+    }
+
     const baseUrl = process.env.NEXTAUTH_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
     const res = await fetch(`${baseUrl}/api/cron/process-recurring`, {
       headers: {
-        Authorization: `Bearer ${process.env.CRON_SECRET || 'dev_secret'}`
+        Authorization: `Bearer ${cronSecret}`
       }
     });
     

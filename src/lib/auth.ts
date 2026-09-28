@@ -4,19 +4,30 @@ import { authConfig } from '@/lib/auth.config';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { randomBytes } from 'node:crypto';
 
-// Cố định cấu hình để tránh lỗi Vercel Dashboard
+function getAuthSecret() {
+  const configuredSecret = process.env.AUTH_SECRET;
+
+  if (configuredSecret && configuredSecret.length >= 32) {
+    return configuredSecret;
+  }
+
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('AUTH_SECRET is required in production and must be at least 32 characters long.');
+  }
+
+  return randomBytes(32).toString('hex');
+}
+
 if (process.env.NODE_ENV === 'production') {
   delete process.env.NEXTAUTH_URL;
   delete process.env.AUTH_URL;
-  if (!process.env.AUTH_SECRET) {
-    process.env.AUTH_SECRET = 'baicuoiki-super-secret-key-for-v5-32-chars';
-  }
 }
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
-  secret: process.env.AUTH_SECRET || 'baicuoiki-super-secret-key-for-v5-32-chars',
+  secret: getAuthSecret(),
   trustHost: true,
   providers: [
     Credentials({

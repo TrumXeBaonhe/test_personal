@@ -1,10 +1,11 @@
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { OtpPurpose } from "@prisma/client";
+import { randomInt } from "crypto";
 
 /** Tạo mã OTP 6 số ngẫu nhiên */
 export function generateOtpCode(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return randomInt(100000, 1000000).toString();
 }
 
 /**
