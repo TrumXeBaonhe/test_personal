@@ -5,14 +5,14 @@ const PUBLIC_ROUTES = ['/login', '/register', '/verify-otp', '/forgot-password',
 const DEFAULT_LOGIN_REDIRECT = '/';
 
 function getAuthSecret() {
-  const configuredSecret = process.env.AUTH_SECRET;
+  const configuredSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
 
   if (configuredSecret && configuredSecret.length >= 32) {
     return configuredSecret;
   }
 
   if (process.env.NODE_ENV === 'production') {
-    throw new Error('AUTH_SECRET is required in production and must be at least 32 characters long.');
+    throw new Error('AUTH_SECRET/NEXTAUTH_SECRET is required in production and must be at least 32 characters long.');
   }
 
   return randomBytes(32).toString('hex');

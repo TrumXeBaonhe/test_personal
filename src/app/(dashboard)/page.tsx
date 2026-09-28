@@ -78,20 +78,23 @@ export default async function DashboardPage() {
   }).format(new Date());
 
   return (
-    <div className="flex flex-col space-y-10 pb-10">
+    <div className="flex flex-col space-y-8 pb-10">
       <BudgetAlerts />
-      
-      {/* Header Chào mừng / Welcome Section */}
+
       <FadeIn delay={0.05}>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">{currentDate}</p>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-              {getGreeting()}, <span className="text-gradient">{dbUser?.fullName || 'Bạn'}</span> 👋
-            </h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button size="sm" className="rounded-full shadow-lg shadow-primary/20" asChild>
+        <div className="relative overflow-hidden rounded-[32px] border border-border/60 bg-gradient-to-br from-violet-600/10 via-background to-cyan-500/10 p-5 shadow-[0_30px_80px_-30px_rgba(79,70,229,0.35)] md:p-8">
+          <div className="absolute -right-14 -top-14 h-40 w-40 rounded-full bg-violet-500/20 blur-3xl" />
+          <div className="absolute bottom-0 right-10 h-32 w-32 rounded-full bg-cyan-400/10 blur-3xl" />
+
+          <div className="relative flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="space-y-3">
+              <p className="text-xs font-bold uppercase tracking-[0.26em] text-muted-foreground">{currentDate}</p>
+              <h1 className="text-3xl font-black tracking-tight md:text-5xl">
+                {getGreeting()}, <span className="text-gradient">{dbUser?.fullName || 'Bạn'}</span>
+              </h1>
+            </div>
+
+            <Button size="lg" className="w-fit rounded-full bg-primary px-5 text-primary-foreground shadow-lg shadow-violet-500/20" asChild>
               <Link href="/transactions">
                 <PlusCircle className="mr-2 h-4 w-4" /> Giao dịch mới
               </Link>
@@ -102,15 +105,15 @@ export default async function DashboardPage() {
 
       {!hasData ? (
         <FadeIn delay={0.1}>
-          <Card className="glass-card flex flex-col items-center justify-center p-16 text-center border-dashed">
-            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-3xl bg-primary/10 shadow-inner">
+          <Card className="glass-card flex flex-col items-center justify-center border-dashed p-16 text-center">
+            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[28px] bg-gradient-to-br from-violet-500/20 to-cyan-500/20 shadow-inner">
               <Wallet className="h-12 w-12 text-primary animate-pulse" />
             </div>
             <h3 className="mt-6 text-2xl font-bold">Bắt đầu hành trình tài chính</h3>
-            <p className="mb-6 mt-3 text-muted-foreground max-w-sm mx-auto">
+            <p className="mx-auto mt-3 max-w-sm text-muted-foreground">
               Chào mừng bạn đến với SpendWise. Hãy tạo chiếc ví đầu tiên để chúng tôi giúp bạn quản lý dòng tiền nhé!
             </p>
-            <Button size="lg" className="rounded-full px-8" asChild>
+            <Button size="lg" className="mt-6 rounded-full px-8" asChild>
               <Link href="/wallets">
                 Khởi tạo ngay <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -119,61 +122,66 @@ export default async function DashboardPage() {
         </FadeIn>
       ) : (
         <>
-          {/* Dashboard Stats Grid */}
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-3">
             <FadeIn delay={0.1} direction="up">
-              <div className="premium-card relative group rounded-3xl p-6 bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl shadow-emerald-500/20 overflow-hidden h-full">
-                <div className="absolute -right-4 -top-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                  <Wallet size={120} />
-                </div>
-                <p className="text-emerald-100/80 text-sm font-semibold uppercase tracking-wider mb-2">Tổng tài sản thực tế</p>
-                <h3 className="text-3xl font-black mb-4 tracking-tight">
-                  <CurrencyDisplay amount={totalBalanceVND} />
-                </h3>
-                <div className="flex items-center gap-2 text-xs text-emerald-100/60 bg-white/10 w-fit px-3 py-1 rounded-full backdrop-blur-md">
-                  <Wallet size={12} />
-                  <span>{walletCount} ví đang hoạt động</span>
+              <div className="premium-card group h-full overflow-hidden bg-gradient-to-br from-violet-600 via-indigo-600 to-cyan-500 p-6 text-white">
+                <div className="absolute -right-5 -top-5 h-28 w-28 rounded-full bg-white/10 blur-2xl" />
+                <div className="relative flex h-full flex-col justify-between">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold uppercase tracking-[0.24em] text-violet-100">Tổng tài sản</p>
+                    <Wallet className="h-5 w-5 text-violet-100" />
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="text-3xl font-black tracking-tight md:text-4xl">
+                      <CurrencyDisplay amount={totalBalanceVND} />
+                    </h3>
+                  </div>
+                  <div className="mt-5 flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-violet-50 backdrop-blur-md">
+                    <Wallet size={12} />
+                    <span>{walletCount} ví đang hoạt động</span>
+                  </div>
                 </div>
               </div>
             </FadeIn>
 
             <FadeIn delay={0.12} direction="up">
-              <div className="glass-card premium-card rounded-3xl p-6 h-full">
-                 <div className="flex justify-between items-start mb-4">
-                    <div className="p-3 bg-primary/10 rounded-2xl text-primary">
-                      <CreditCard size={24} />
-                    </div>
-                    <span className="text-xs font-bold text-muted-foreground uppercase">Ví & Tài khoản</span>
-                 </div>
-                 <p className="text-muted-foreground text-sm font-medium mb-1">Số lượng ví</p>
-                 <h3 className="text-3xl font-extrabold">{walletCount} <span className="text-lg font-normal text-muted-foreground">tài khoản</span></h3>
+              <div className="glass-card premium-card h-full p-6">
+                <div className="mb-5 flex items-center justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-500/10 text-violet-600">
+                    <CreditCard size={22} />
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">Ví</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Số lượng ví</p>
+                <h3 className="mt-2 text-3xl font-black tracking-tight">{walletCount}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">Tài khoản đang theo dõi</p>
               </div>
             </FadeIn>
 
             <FadeIn delay={0.14} direction="up">
-              <div className="glass-card premium-card rounded-3xl p-6 h-full border-rose-500/10">
-                 <div className="flex justify-between items-start mb-4">
-                    <div className="p-3 bg-rose-500/10 rounded-2xl text-rose-500">
-                      <TrendingDown size={24} />
-                    </div>
-                    <span className="text-xs font-bold text-rose-500/70 uppercase">Chi tiêu tháng</span>
-                 </div>
-                 <p className="text-muted-foreground text-sm font-medium mb-1">Tháng hiện tại</p>
-                 <h3 className="text-3xl font-extrabold text-rose-500">
-                    <CurrencyDisplay amount={currentExpVND} />
-                 </h3>
-                 <div className={`mt-2 flex items-center gap-1 text-xs font-bold ${stats.momStats.expDiffPercent >= 0 ? 'text-rose-500' : 'text-emerald-500'}`}>
-                    {stats.momStats.expDiffPercent >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                    {Math.abs(stats.momStats.expDiffPercent)}% so với tháng trước
-                 </div>
+              <div className="glass-card premium-card h-full border-rose-500/10 p-6">
+                <div className="mb-5 flex items-center justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500">
+                    <TrendingDown size={22} />
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-rose-500/80">Chi tiêu</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Tháng hiện tại</p>
+                <h3 className="mt-2 text-3xl font-black tracking-tight text-rose-500">
+                  <CurrencyDisplay amount={currentExpVND} />
+                </h3>
+                <div className={`mt-3 inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold ${stats.momStats.expDiffPercent >= 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-emerald-500/10 text-emerald-500'}`}>
+                  {stats.momStats.expDiffPercent >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                  {Math.abs(stats.momStats.expDiffPercent)}% so với tháng trước
+                </div>
               </div>
             </FadeIn>
           </div>
 
-          <div className="grid gap-6 grid-cols-1 lg:grid-cols-12">
+          <div className="grid gap-6 lg:grid-cols-12">
             <div className="lg:col-span-4">
               <FadeIn delay={0.16} direction="left">
-                <Card className="glass-card premium-card rounded-3xl overflow-hidden h-full border-none shadow-lg">
+                <Card className="glass-card premium-card h-full overflow-hidden border-none">
                   <CardHeader className="pb-0">
                     <CardTitle className="text-lg font-bold">Phân bổ Chi tiêu</CardTitle>
                     <CardDescription>Theo danh mục (30 ngày)</CardDescription>
@@ -185,7 +193,7 @@ export default async function DashboardPage() {
 
             <div className="lg:col-span-8">
               <FadeIn delay={0.18} direction="right">
-                <Card className="glass-card premium-card rounded-3xl overflow-hidden h-full border-none shadow-lg">
+                <Card className="glass-card premium-card h-full overflow-hidden border-none">
                   <CardHeader className="pb-0">
                     <CardTitle className="text-lg font-bold">Xu hướng Tài chính</CardTitle>
                     <CardDescription>So sánh thu nhập & chi tiêu</CardDescription>
@@ -196,7 +204,7 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2">
             <FadeIn delay={0.2} direction="up">
               <div className="h-full">
                 <AIAdvisor />
@@ -204,7 +212,7 @@ export default async function DashboardPage() {
             </FadeIn>
 
             <FadeIn delay={0.22} direction="up">
-              <Card className="glass-card premium-card rounded-3xl h-full border-none shadow-lg">
+              <Card className="glass-card premium-card h-full border-none">
                 <CardHeader>
                   <CardTitle className="text-lg font-bold">Mục tiêu Tiết kiệm</CardTitle>
                   <CardDescription>Hành trình đạt được giấc mơ của bạn</CardDescription>

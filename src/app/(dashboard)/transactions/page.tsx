@@ -58,19 +58,23 @@ export default async function TransactionsPage(props: {
   ]);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-10">
+    <div className="mx-auto max-w-7xl space-y-6 pb-10">
       <FadeIn delay={0.05}>
-        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-gradient">Quản lý giao dịch</h1>
-            <p className="text-muted-foreground"> Xem và quản lý lịch sử thu chi của bạn. </p>
+        <div className="relative overflow-hidden rounded-[32px] border border-border/60 bg-gradient-to-br from-violet-600/10 via-background to-cyan-500/10 p-6 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.35)]">
+          <div className="absolute -right-8 -top-10 h-36 w-36 rounded-full bg-violet-500/20 blur-3xl" />
+          <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">Ledger</p>
+              <h1 className="mt-2 text-3xl font-black tracking-tight text-gradient">Quản lý giao dịch</h1>
+              <p className="mt-2 text-sm text-muted-foreground">Xem và quản lý lịch sử thu chi của bạn.</p>
+            </div>
+            <ExportButton data={transactions} />
           </div>
-          <ExportButton data={transactions} />
         </div>
       </FadeIn>
 
       <FadeIn delay={0.1} direction="up">
-        <div className="glass-card rounded-2xl border p-4">
+        <div className="rounded-[28px] border border-border/60 bg-card/70 p-4 shadow-[0_25px_60px_-30px_rgba(76,29,149,0.35)] backdrop-blur-xl">
           <div className="mb-4 flex items-center gap-2 font-semibold text-primary">
             <Filter className="h-4 w-4" />
             Bộ lọc nâng cao
@@ -80,9 +84,9 @@ export default async function TransactionsPage(props: {
       </FadeIn>
 
       <FadeIn delay={0.15} direction="up">
-        <div className="glass-card rounded-2xl border overflow-hidden">
+        <div className="overflow-hidden rounded-[28px] border border-border/60 bg-card/75 shadow-[0_25px_60px_-30px_rgba(76,29,149,0.35)] backdrop-blur-xl">
           <Table>
-            <TableHeader className="bg-muted/30">
+            <TableHeader>
               <TableRow>
                 <TableHead className="w-[120px]">Ngày</TableHead>
                 <TableHead>Danh mục / Mô tả</TableHead>
@@ -100,8 +104,8 @@ export default async function TransactionsPage(props: {
                 </TableRow>
               ) : (
                 (transactions as unknown as TransactionWithRelations[]).map((t) => (
-                  <TableRow key={t.id} className="hover:bg-primary/5 transition-colors group">
-                    <TableCell className="font-medium text-xs md:text-sm">
+                  <TableRow key={t.id} className="group transition-colors hover:bg-violet-500/5">
+                    <TableCell className="text-xs font-medium md:text-sm">
                       {format(new Date(t.date), "dd/MM/yyyy")}
                     </TableCell>
                     <TableCell>
@@ -114,31 +118,31 @@ export default async function TransactionsPage(props: {
                             </div>
                           ) : (
                             <div className="flex flex-wrap items-center gap-2">
-                               {t.category?.name || "N/A"}
-                               {t.tags && t.tags.length > 0 && (
-                                 <div className="flex gap-1">
-                                   {t.tags.map(({ tag }) => (
-                                     <div 
-                                      key={tag.id} 
-                                      className="w-2 h-2 rounded-full" 
+                              {t.category?.name || "N/A"}
+                              {t.tags && t.tags.length > 0 && (
+                                <div className="flex gap-1">
+                                  {t.tags.map(({ tag }) => (
+                                    <div
+                                      key={tag.id}
+                                      className="h-2 w-2 rounded-full"
                                       style={{ backgroundColor: tag.color || '#ccc' }}
                                       title={tag.name}
-                                     />
-                                   ))}
-                                 </div>
-                               )}
+                                    />
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           )}
                         </span>
-                        {t.note && <span className="text-[10px] md:text-xs text-muted-foreground line-clamp-1">{t.note}</span>}
+                        {t.note && <span className="line-clamp-1 text-[10px] text-muted-foreground md:text-xs">{t.note}</span>}
                         {t.locationName && (
-                          <span className="text-[9px] md:text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                          <span className="mt-0.5 flex items-center gap-1 text-[9px] text-muted-foreground md:text-xs">
                             <MapPin className="h-2.5 w-2.5" />
                             {t.locationName}
                           </span>
                         )}
-                        <div className="md:hidden mt-0.5">
-                           <Badge variant="outline" className="text-[9px] px-1 py-0 h-4">{t.wallet?.name}</Badge>
+                        <div className="mt-0.5 md:hidden">
+                          <Badge variant="outline" className="h-4 px-1 py-0 text-[9px]">{t.wallet?.name}</Badge>
                         </div>
                       </div>
                     </TableCell>
@@ -150,13 +154,13 @@ export default async function TransactionsPage(props: {
                           <span className="font-medium text-foreground">{t.toWallet?.name}</span>
                         </div>
                       ) : (
-                        <Badge variant="outline" className="font-medium text-xs">
+                        <Badge variant="outline" className="text-xs font-medium">
                           {t.wallet?.name}
                         </Badge>
                       )}
                     </TableCell>
                     <TableCell className="text-right">
-                      <span className={`font-black text-sm md:text-base ${
+                      <span className={`text-sm font-black md:text-base ${
                         t.type === "INCOME" ? "text-emerald-500" :
                         t.type === "EXPENSE" ? "text-rose-500" :
                         "text-blue-500"
@@ -166,7 +170,7 @@ export default async function TransactionsPage(props: {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="opacity-0 transition-opacity group-hover:opacity-100">
                         <DeleteTransactionButton transactionId={t.id} />
                       </div>
                     </TableCell>

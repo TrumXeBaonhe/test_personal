@@ -135,96 +135,100 @@ export default function WalletsPage() {
   return (
     <div className="space-y-8 pb-10">
       <FadeIn delay={0.1}>
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight text-gradient">Ví của tôi</h2>
-            <p className="text-muted-foreground">Quản lý các tài khoản và nguồn tiền của bạn</p>
-          </div>
-          <Dialog open={isDialogOpen} onOpenChange={(open) => {
-            setIsDialogOpen(open);
-            if (!open) resetForm();
-          }}>
-            <DialogTrigger render={<Button className="rounded-full px-6 shadow-lg shadow-primary/20 hover:scale-105 transition-all" />}>
-              <Plus className="mr-2 h-4 w-4" /> Thêm ví mới
-            </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] border-none shadow-2xl glass-effect">
-            <form onSubmit={handleSubmit}>
-              <DialogHeader>
-                <DialogTitle>{editingWallet ? "Sửa ví" : "Thêm ví mới"}</DialogTitle>
-                <DialogDescription>
-                  Nhập thông tin ví của bạn. Số dư này sẽ được cộng vào tổng tài sản.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Tên ví</Label>
-                  <Input
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="VD: Techcombank, Tiền mặt..."
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="balance">Số dư ban đầu</Label>
-                  <Input
-                    id="balance"
-                    type="number"
-                    value={balance}
-                    onChange={(e) => setBalance(e.target.value)}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label>Biểu tượng</Label>
-                  <div className="flex gap-2">
-                    {WALLET_ICONS.map((i) => (
-                      <Button
-                        key={i.name}
-                        type="button"
-                        variant={icon === i.name ? "default" : "outline"}
-                        size="icon"
-                        onClick={() => setIcon(i.name)}
-                        className="h-10 w-10"
-                      >
-                        <i.icon className="h-5 w-5" />
-                      </Button>
-                    ))}
+        <div className="relative overflow-hidden rounded-[32px] border border-border/60 bg-gradient-to-br from-violet-600/10 via-background to-cyan-500/10 p-6 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.35)]">
+          <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-violet-500/20 blur-3xl" />
+          <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">Tài khoản</p>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-gradient">Ví của tôi</h2>
+              <p className="mt-2 text-sm text-muted-foreground">Quản lý các tài khoản và nguồn tiền của bạn</p>
+            </div>
+            <Dialog open={isDialogOpen} onOpenChange={(open) => {
+              setIsDialogOpen(open);
+              if (!open) resetForm();
+            }}>
+              <DialogTrigger render={<Button className="rounded-full px-6 shadow-lg shadow-violet-500/20" />}>
+                <Plus className="mr-2 h-4 w-4" /> Thêm ví mới
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] border-none bg-card/90 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.45)] backdrop-blur-xl">
+                <form onSubmit={handleSubmit}>
+                  <DialogHeader>
+                    <DialogTitle>{editingWallet ? "Sửa ví" : "Thêm ví mới"}</DialogTitle>
+                    <DialogDescription>
+                      Nhập thông tin ví của bạn. Số dư này sẽ được cộng vào tổng tài sản.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="name">Tên ví</Label>
+                      <Input
+                        id="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="VD: Techcombank, Tiền mặt..."
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="balance">Số dư ban đầu</Label>
+                      <Input
+                        id="balance"
+                        type="number"
+                        value={balance}
+                        onChange={(e) => setBalance(e.target.value)}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label>Biểu tượng</Label>
+                      <div className="flex flex-wrap gap-2">
+                        {WALLET_ICONS.map((i) => (
+                          <Button
+                            key={i.name}
+                            type="button"
+                            variant={icon === i.name ? "default" : "outline"}
+                            size="icon"
+                            onClick={() => setIcon(i.name)}
+                            className="h-10 w-10"
+                          >
+                            <i.icon className="h-5 w-5" />
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">Lưu thay đổi</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-          </Dialog>
+                  <DialogFooter>
+                    <Button type="submit">Lưu thay đổi</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </FadeIn>
 
       {isLoading ? (
         <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
           {[1, 2, 3].map(i => (
-            <Card key={i} className="h-32 animate-pulse bg-muted" />
+            <Card key={i} className="h-32 animate-pulse bg-muted/40" />
           ))}
         </div>
       ) : wallets.length === 0 ? (
-        <Card className="flex flex-col items-center justify-center p-12 text-center border-dashed border-2">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-            <Wallet className="h-8 w-8 text-muted-foreground" />
+        <Card className="flex flex-col items-center justify-center border-dashed border-2 p-12 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-violet-500/10">
+            <Wallet className="h-8 w-8 text-primary" />
           </div>
           <h3 className="mt-4 text-lg font-semibold text-foreground">Bạn chưa có ví nào</h3>
-          <p className="mb-4 mt-2 text-sm text-muted-foreground max-w-xs">
+          <p className="mb-4 mt-2 max-w-xs text-sm text-muted-foreground">
             Hãy thêm ví đầu tiên để bắt đầu quản lý các giao dịch tài chính của bạn.
           </p>
         </Card>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {wallets.map((wallet) => (
-            <Card key={wallet.id} className="relative overflow-hidden border-none shadow-sm hover:shadow-md transition-all group bg-card/50 backdrop-blur-sm">
-              <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <Card key={wallet.id} className="group relative overflow-hidden border-none bg-card/70 shadow-[0_25px_60px_-30px_rgba(76,29,149,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_-28px_rgba(79,70,229,0.35)]">
+              <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-violet-500 via-indigo-500 to-cyan-500" />
+              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pl-5 pt-5">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-110">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-violet-500/10 text-violet-600 transition-transform group-hover:scale-110">
                     {getIconComponent(wallet.icon || "Wallet")}
                   </div>
                   <div>
@@ -232,24 +236,24 @@ export default function WalletsPage() {
                     <CardDescription className="text-xs">Tài khoản chính</CardDescription>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
+                <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary"
                     onClick={() => handleOpenEdit(wallet)}
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  
+
                   <AlertDialog>
-                    <AlertDialogTrigger 
+                    <AlertDialogTrigger
                       nativeButton={true}
                       render={<Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-destructive/10 hover:text-destructive" />}
                     >
                       <Trash2 className="h-4 w-4" />
                     </AlertDialogTrigger>
-                    <AlertDialogContent className="glass-effect border-none shadow-2xl">
+                    <AlertDialogContent className="border-none bg-card/90 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.45)] backdrop-blur-xl">
                       <AlertDialogHeader>
                         <AlertDialogTitle>Bạn có chắc muốn xóa ví này?</AlertDialogTitle>
                         <AlertDialogDescription>
@@ -260,7 +264,7 @@ export default function WalletsPage() {
                         <AlertDialogCancel className="rounded-xl">Hủy</AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() => handleDelete(wallet.id)}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-xl"
+                          className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
                           Xác nhận xóa
                         </AlertDialogAction>
@@ -269,13 +273,13 @@ export default function WalletsPage() {
                   </AlertDialog>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold tracking-tight text-foreground">
+              <CardContent className="pl-5 pb-4">
+                <div className="text-2xl font-black tracking-tight text-foreground">
                   <CurrencyDisplay amount={wallet.balance} />
                 </div>
               </CardContent>
-              <CardFooter className="pt-0 pb-4">
-                <div className="text-[10px] text-muted-foreground uppercase font-medium tracking-wider">
+              <CardFooter className="border-t border-border/60 bg-muted/20 px-5 py-3">
+                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                   Cập nhật gần đây
                 </div>
               </CardFooter>

@@ -35,38 +35,41 @@ export default function QRCodePage() {
   return (
     <div className="flex flex-col space-y-8 pb-10">
       <FadeIn delay={0.1}>
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight text-gradient">Mã QR Thanh toán</h2>
-          <p className="text-muted-foreground">Tạo mã QR để nhận tiền hoặc quét mã QR để gửi tiền</p>
+        <div className="relative overflow-hidden rounded-[32px] border border-border/60 bg-gradient-to-br from-violet-600/10 via-background to-cyan-500/10 p-6 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.35)]">
+          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-violet-500/20 blur-3xl" />
+          <div className="relative">
+            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">Payments</p>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-gradient">Mã QR Thanh toán</h2>
+            <p className="mt-2 text-sm text-muted-foreground">Tạo mã QR để nhận tiền hoặc quét mã QR để gửi tiền</p>
+          </div>
         </div>
       </FadeIn>
 
       <FadeIn delay={0.2}>
         <Tabs defaultValue="generate" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-muted/40 rounded-full p-1">
+          <TabsList className="grid w-full grid-cols-3 rounded-full border bg-muted/40 p-1">
             <TabsTrigger value="generate" className="rounded-full">
-              <QrCode className="h-4 w-4 mr-2" />
+              <QrCode className="mr-2 h-4 w-4" />
               Tạo QR
             </TabsTrigger>
             <TabsTrigger value="scan" className="rounded-full">
-              <QrCode className="h-4 w-4 mr-2" />
+              <QrCode className="mr-2 h-4 w-4" />
               Quét QR
             </TabsTrigger>
             <TabsTrigger value="transfer" disabled={!scannedAccount} className="rounded-full">
-              <Send className="h-4 w-4 mr-2" />
+              <Send className="mr-2 h-4 w-4" />
               Chuyển khoản
             </TabsTrigger>
           </TabsList>
 
-          {/* Generate Tab */}
           <TabsContent value="generate" className="mt-6">
             {accountNumber && !loading ? (
               <QRGenerator accountNumber={accountNumber} userName={userName} />
             ) : (
-              <Card className="glass-card border-none">
+              <Card className="border-none bg-card/75 shadow-[0_25px_60px_-30px_rgba(76,29,149,0.35)]">
                 <CardContent className="pt-6">
-                  <div className="text-center py-8">
-                    <div className="animate-spin inline-block h-8 w-8 border-4 border-primary/30 border-t-primary rounded-full" />
+                  <div className="py-8 text-center">
+                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary/30 border-t-primary" />
                     <p className="mt-4 text-muted-foreground">Đang tải thông tin...</p>
                   </div>
                 </CardContent>
@@ -74,7 +77,6 @@ export default function QRCodePage() {
             )}
           </TabsContent>
 
-          {/* Scan Tab */}
           <TabsContent value="scan" className="mt-6">
             <QRScanner
               onScanSuccess={(data) => {
@@ -83,7 +85,6 @@ export default function QRCodePage() {
             />
           </TabsContent>
 
-          {/* Transfer Tab */}
           <TabsContent value="transfer" className="mt-6">
             {scannedAccount ? (
               <TransferForm
@@ -93,7 +94,7 @@ export default function QRCodePage() {
                 }}
               />
             ) : (
-              <Card className="glass-card border-none">
+              <Card className="border-none bg-card/75 shadow-[0_25px_60px_-30px_rgba(76,29,149,0.35)]">
                 <CardHeader>
                   <CardTitle>Chưa quét mã QR</CardTitle>
                   <CardDescription>Vui lòng quét mã QR trước để tiếp tục chuyển khoản</CardDescription>
@@ -104,10 +105,9 @@ export default function QRCodePage() {
         </Tabs>
       </FadeIn>
 
-      {/* Info Cards */}
       <FadeIn delay={0.3}>
         <div className="grid gap-4 md:grid-cols-2">
-          <Card className="glass-card border-none bg-blue-500/5">
+          <Card className="border-none bg-blue-500/5 shadow-sm">
             <CardHeader>
               <CardTitle className="text-base">📲 Tạo mã QR</CardTitle>
             </CardHeader>
@@ -116,7 +116,7 @@ export default function QRCodePage() {
             </CardContent>
           </Card>
 
-          <Card className="glass-card border-none bg-emerald-500/5">
+          <Card className="border-none bg-emerald-500/5 shadow-sm">
             <CardHeader>
               <CardTitle className="text-base">🔍 Quét mã QR</CardTitle>
             </CardHeader>
@@ -125,7 +125,7 @@ export default function QRCodePage() {
             </CardContent>
           </Card>
 
-          <Card className="glass-card border-none bg-purple-500/5">
+          <Card className="border-none bg-purple-500/5 shadow-sm">
             <CardHeader>
               <CardTitle className="text-base">💰 Nhập số tiền</CardTitle>
             </CardHeader>
@@ -134,7 +134,7 @@ export default function QRCodePage() {
             </CardContent>
           </Card>
 
-          <Card className="glass-card border-none bg-amber-500/5">
+          <Card className="border-none bg-amber-500/5 shadow-sm">
             <CardHeader>
               <CardTitle className="text-base">✅ Xác nhận</CardTitle>
             </CardHeader>

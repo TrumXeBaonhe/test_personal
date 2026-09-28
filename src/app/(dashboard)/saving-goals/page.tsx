@@ -220,80 +220,84 @@ export default function SavingGoalsPage() {
   return (
     <div className="space-y-8 pb-10">
       <FadeIn delay={0.05}>
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight text-gradient">Mục tiêu tiết kiệm</h2>
-            <p className="text-muted-foreground">Hiện thực hóa những ước mơ của bạn</p>
-          </div>
-          <Dialog open={isGoalDialogOpen} onOpenChange={(open) => {
-            setIsGoalDialogOpen(open);
-            if (!open) resetGoalForm();
-          }}>
-            <DialogTrigger render={<Button className="rounded-full shadow-lg shadow-primary/10 hover:scale-105 transition-all" />}>
-              <Plus className="mr-2 h-4 w-4" /> Thêm mục tiêu
-            </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] glass-effect border-none shadow-2xl">
-            <form onSubmit={handleGoalSubmit}>
-              <DialogHeader>
-                <DialogTitle>{editingGoal ? "Sửa mục tiêu" : "Tạo mục tiêu mới"}</DialogTitle>
-                <DialogDescription>Xác định mục tiêu và thời hạn hoàn thành.</DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="goal-name">Tên mục tiêu</Label>
-                  <Input 
-                    id="goal-name" 
-                    value={goalName} 
-                    onChange={(e) => setGoalName(e.target.value)} 
-                    placeholder="VD: Mua Macbook, Đi du lịch..." 
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="target-amount">Số tiền cần tiết kiệm ({currentCurrency})</Label>
-                  <Input 
-                    id="target-amount" 
-                    type="number" 
-                    value={targetAmount} 
-                    onChange={(e) => setTargetAmount(e.target.value)} 
-                    placeholder="50000000"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="deadline">Hạn hoàn thành</Label>
-                  <Input 
-                    id="deadline" 
-                    type="date" 
-                    value={deadline} 
-                    onChange={(e) => setDeadline(e.target.value)} 
-                  />
-                </div>
-                <div className="flex items-center space-x-2 mt-2 p-3 bg-primary/5 rounded-xl border border-primary/10">
-                  <input 
-                    type="checkbox" 
-                    id="is-round-up" 
-                    checked={isRoundUp} 
-                    onChange={(e) => setIsRoundUp(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                  />
-                  <div className="grid gap-1.5 leading-none">
-                    <label
-                      htmlFor="is-round-up"
-                      className="text-sm font-bold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Bật Tiết kiệm tự động (Round-up)
-                    </label>
-                    <p className="text-[10px] text-muted-foreground">
-                      Tự động làm tròn chi tiêu đến 10.000đ và bỏ vào mục tiêu này.
-                    </p>
+        <div className="relative overflow-hidden rounded-[32px] border border-border/60 bg-gradient-to-br from-violet-600/10 via-background to-cyan-500/10 p-6 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.35)]">
+          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-violet-500/20 blur-3xl" />
+          <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">Savings</p>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-gradient">Mục tiêu tiết kiệm</h2>
+              <p className="mt-2 text-sm text-muted-foreground">Hiện thực hóa những ước mơ của bạn</p>
+            </div>
+            <Dialog open={isGoalDialogOpen} onOpenChange={(open) => {
+              setIsGoalDialogOpen(open);
+              if (!open) resetGoalForm();
+            }}>
+              <DialogTrigger render={<Button className="rounded-full px-6 shadow-lg shadow-violet-500/20" />}>
+                <Plus className="mr-2 h-4 w-4" /> Thêm mục tiêu
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] border-none bg-card/90 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.45)] backdrop-blur-xl">
+                <form onSubmit={handleGoalSubmit}>
+                  <DialogHeader>
+                    <DialogTitle>{editingGoal ? "Sửa mục tiêu" : "Tạo mục tiêu mới"}</DialogTitle>
+                    <DialogDescription>Xác định mục tiêu và thời hạn hoàn thành.</DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="goal-name">Tên mục tiêu</Label>
+                      <Input
+                        id="goal-name"
+                        value={goalName}
+                        onChange={(e) => setGoalName(e.target.value)}
+                        placeholder="VD: Mua Macbook, Đi du lịch..."
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="target-amount">Số tiền cần tiết kiệm ({currentCurrency})</Label>
+                      <Input
+                        id="target-amount"
+                        type="number"
+                        value={targetAmount}
+                        onChange={(e) => setTargetAmount(e.target.value)}
+                        placeholder="50000000"
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="deadline">Hạn hoàn thành</Label>
+                      <Input
+                        id="deadline"
+                        type="date"
+                        value={deadline}
+                        onChange={(e) => setDeadline(e.target.value)}
+                      />
+                    </div>
+                    <div className="mt-2 flex items-center space-x-2 rounded-xl border border-primary/10 bg-primary/5 p-3">
+                      <input
+                        type="checkbox"
+                        id="is-round-up"
+                        checked={isRoundUp}
+                        onChange={(e) => setIsRoundUp(e.target.checked)}
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <div className="grid gap-1.5 leading-none">
+                        <label
+                          htmlFor="is-round-up"
+                          className="text-sm font-bold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          Bật Tiết kiệm tự động (Round-up)
+                        </label>
+                        <p className="text-[10px] text-muted-foreground">
+                          Tự động làm tròn chi tiêu đến 10.000đ và bỏ vào mục tiêu này.
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit" className="w-full">Lưu mục tiêu</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-          </Dialog>
+                  <DialogFooter>
+                    <Button type="submit" className="w-full">Lưu mục tiêu</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </FadeIn>
 
@@ -302,42 +306,42 @@ export default function SavingGoalsPage() {
           {[1, 2, 3].map(i => <Card key={i} className="h-48 animate-pulse bg-muted" />)}
         </div>
       ) : goals.length === 0 ? (
-        <Card className="flex flex-col items-center justify-center p-12 text-center border-dashed border-2 bg-card/30">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+        <Card className="flex flex-col items-center justify-center border-dashed border-2 bg-card/30 p-12 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-violet-500/10">
             <Target className="h-8 w-8 text-primary" />
           </div>
           <h3 className="mt-4 text-xl font-semibold">Bạn chưa có mục tiêu nào</h3>
-          <p className="mt-2 text-muted-foreground max-w-sm">
+          <p className="mt-2 max-w-sm text-muted-foreground">
             Đặt ra một mục tiêu tiết kiệm sẽ giúp bạn quản lý tài chính có kỷ luật hơn.
           </p>
         </Card>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {goals.map((goal) => {
             const progress = calculateProgress(goal.currentAmount, goal.targetAmount);
             const daysLeft = getDaysRemaining(goal.deadlineDate);
-            
+
             return (
-              <Card key={goal.id} className="relative overflow-hidden group border-none shadow-sm hover:shadow-xl transition-all duration-300 bg-card/60 backdrop-blur-md">
-                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                   <DropdownMenu>
+              <Card key={goal.id} className="group relative overflow-hidden border border-border/60 bg-card/75 shadow-[0_25px_60px_-30px_rgba(76,29,149,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_30px_80px_-28px_rgba(79,70,229,0.35)]">
+                <div className="absolute right-0 top-0 p-2 opacity-0 transition-opacity group-hover:opacity-100">
+                  <DropdownMenu>
                     <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" />}>
                       <MoreVertical className="h-4 w-4" />
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="glass-effect">
+                    <DropdownMenuContent align="end" className="border-none bg-card/90 shadow-[0_30px_60px_-30px_rgba(76,29,149,0.45)] backdrop-blur-xl">
                       <DropdownMenuItem onClick={() => handleOpenEdit(goal)} className="cursor-pointer">
                         <Pencil className="mr-2 h-4 w-4" /> Chỉnh sửa
                       </DropdownMenuItem>
                       <AlertDialog>
-                        <AlertDialogTrigger 
+                        <AlertDialogTrigger
                           nativeButton={true}
-                          render={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive cursor-pointer" />}
+                          render={<DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer text-destructive" />}
                         >
-                          <div className="flex items-center w-full">
+                          <div className="flex w-full items-center">
                             <Trash2 className="mr-2 h-4 w-4" /> Xóa mục tiêu
                           </div>
                         </AlertDialogTrigger>
-                        <AlertDialogContent>
+                        <AlertDialogContent className="border-none bg-card/90 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.45)] backdrop-blur-xl">
                           <AlertDialogHeader>
                             <AlertDialogTitle>Xác nhận xóa?</AlertDialogTitle>
                             <AlertDialogDescription>
@@ -353,17 +357,17 @@ export default function SavingGoalsPage() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-                
+
                 <CardHeader>
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                    <div className="rounded-lg bg-violet-500/10 p-2 text-primary">
                       <Target className="h-5 w-5" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <CardTitle className="text-lg">{goal.name}</CardTitle>
                         {goal.isRoundUp && (
-                          <span className="bg-primary/20 text-primary text-[8px] font-black uppercase px-1.5 py-0.5 rounded-full border border-primary/20">
+                          <span className="rounded-full border border-primary/20 bg-primary/20 px-1.5 py-0.5 text-[8px] font-black uppercase text-primary">
                             Round-up
                           </span>
                         )}
@@ -374,7 +378,7 @@ export default function SavingGoalsPage() {
                     </div>
                   </div>
                 </CardHeader>
-                
+
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
@@ -383,28 +387,28 @@ export default function SavingGoalsPage() {
                     </div>
                     <Progress value={progress} className="h-2" />
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <p className="text-[10px] uppercase text-muted-foreground font-medium">Đã có</p>
+                      <p className="text-[10px] font-medium uppercase text-muted-foreground">Đã có</p>
                       <p className="text-sm font-semibold text-primary"><CurrencyDisplay amount={Number(goal.currentAmount)} /></p>
                     </div>
                     <div className="space-y-1 text-right">
-                      <p className="text-[10px] uppercase text-muted-foreground font-medium">Mục tiêu</p>
+                      <p className="text-[10px] font-medium uppercase text-muted-foreground">Mục tiêu</p>
                       <p className="text-sm font-semibold"><CurrencyDisplay amount={Number(goal.targetAmount)} /></p>
                     </div>
                   </div>
                 </CardContent>
-                
+
                 <CardFooter className="pt-2">
                   <Dialog open={isContributionDialogOpen && activeGoalId === goal.id} onOpenChange={(open) => {
                     setIsContributionDialogOpen(open);
                     if (open) setActiveGoalId(goal.id);
                   }}>
-                    <DialogTrigger render={<Button className="w-full group/btn" variant="outline" />}>
+                    <DialogTrigger render={<Button className="group/btn w-full" variant="outline" />}>
                       <ArrowUpCircle className="mr-2 h-4 w-4 transition-transform group-hover/btn:-translate-y-1" /> Nạp thêm tiền
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[400px]">
+                    <DialogContent className="sm:max-w-[400px] border-none bg-card/90 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.45)] backdrop-blur-xl">
                       <form onSubmit={handleContributionSubmit}>
                         <DialogHeader>
                           <DialogTitle>Nạp tiền cho: {goal.name}</DialogTitle>
@@ -430,10 +434,10 @@ export default function SavingGoalsPage() {
                           </div>
                           <div className="grid gap-2">
                             <Label>Số tiền nạp ({currentCurrency})</Label>
-                            <Input 
-                              type="number" 
-                              value={contributionAmount} 
-                              onChange={(e) => setContributionAmount(e.target.value)} 
+                            <Input
+                              type="number"
+                              value={contributionAmount}
+                              onChange={(e) => setContributionAmount(e.target.value)}
                               placeholder="1.000.000"
                             />
                           </div>

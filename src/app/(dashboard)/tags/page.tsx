@@ -130,94 +130,98 @@ export default function TagsPage() {
   );
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <Hash className="h-8 w-8 text-primary" />
-            Quản lý Thẻ (Tags)
-          </h2>
-          <p className="text-muted-foreground">Phân loại chi tiết và gắn nhãn cho các giao dịch của bạn</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Tìm kiếm tag..." 
-              className="pl-9 bg-card/50" 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+    <div className="space-y-8 pb-10">
+      <div className="relative overflow-hidden rounded-[32px] border border-border/60 bg-gradient-to-br from-violet-600/10 via-background to-cyan-500/10 p-6 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.35)]">
+        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-violet-500/20 blur-3xl" />
+        <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">Labels</p>
+            <h2 className="mt-2 flex items-center gap-2 text-3xl font-black tracking-tight text-gradient">
+              <Hash className="h-8 w-8 text-primary" />
+              Quản lý Thẻ (Tags)
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">Phân loại chi tiết và gắn nhãn cho các giao dịch của bạn</p>
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={(open) => {
-            setIsDialogOpen(open);
-            if (!open) resetForm();
-          }}>
-            <DialogTrigger render={<Button className="rounded-full shadow-lg" />}>
-              <Plus className="mr-2 h-4 w-4" /> Thêm Tag
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] glass-effect border-none shadow-2xl">
-              <form onSubmit={handleSubmit}>
-                <DialogHeader>
-                  <DialogTitle>{editingTag ? "Sửa Tag" : "Tạo Tag mới"}</DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-6 py-6">
-                  <div className="grid gap-2">
-                    <Label htmlFor="tag-name">Tên Tag</Label>
-                    <div className="relative">
-                      <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        id="tag-name" 
-                        value={name} 
-                        onChange={(e) => setName(e.target.value)} 
-                        placeholder="VD: hanoi-trip, ban-be..." 
-                        className="pl-9"
-                      />
+          <div className="flex items-center gap-3">
+            <div className="relative w-full md:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Tìm kiếm tag..."
+                className="rounded-xl bg-card/70 pl-9"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Dialog open={isDialogOpen} onOpenChange={(open) => {
+              setIsDialogOpen(open);
+              if (!open) resetForm();
+            }}>
+              <DialogTrigger render={<Button className="rounded-full px-6 shadow-lg shadow-violet-500/20" />}>
+                <Plus className="mr-2 h-4 w-4" /> Thêm Tag
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] border-none bg-card/90 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.45)] backdrop-blur-xl">
+                <form onSubmit={handleSubmit}>
+                  <DialogHeader>
+                    <DialogTitle>{editingTag ? "Sửa Tag" : "Tạo Tag mới"}</DialogTitle>
+                  </DialogHeader>
+                  <div className="grid gap-6 py-6">
+                    <div className="grid gap-2">
+                      <Label htmlFor="tag-name">Tên Tag</Label>
+                      <div className="relative">
+                        <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="tag-name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="VD: hanoi-trip, ban-be..."
+                          className="pl-9"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label>Màu sắc</Label>
+                      <div className="flex flex-wrap gap-3">
+                        {PRESET_COLORS.map((c) => (
+                          <button
+                            key={c}
+                            type="button"
+                            className={`flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all hover:scale-125 ${color === c ? 'border-primary scale-110 shadow-md' : 'border-transparent'}`}
+                            style={{ backgroundColor: c }}
+                            onClick={() => setColor(c)}
+                          >
+                            {color === c && <Check className="h-4 w-4 text-white drop-shadow-sm" />}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-center rounded-lg border bg-muted/30 p-4">
+                      <Badge
+                        style={{
+                          backgroundColor: `${color}20`,
+                          color: color,
+                          borderColor: color
+                        }}
+                        className="border px-4 py-1 text-lg"
+                      >
+                        # {name || "preview"}
+                      </Badge>
                     </div>
                   </div>
-                  
-                  <div className="grid gap-2">
-                    <Label>Màu sắc</Label>
-                    <div className="flex flex-wrap gap-3">
-                      {PRESET_COLORS.map((c) => (
-                        <button
-                          key={c}
-                          type="button"
-                          className={`h-8 w-8 rounded-full border-2 transition-all hover:scale-125 flex items-center justify-center ${color === c ? 'border-primary scale-110 shadow-md' : 'border-transparent'}`}
-                          style={{ backgroundColor: c }}
-                          onClick={() => setColor(c)}
-                        >
-                          {color === c && <Check className="h-4 w-4 text-white drop-shadow-sm" />}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="p-4 border rounded-lg bg-muted/30 flex items-center justify-center">
-                    <Badge 
-                      style={{ 
-                        backgroundColor: `${color}20`, 
-                        color: color,
-                        borderColor: color
-                      }}
-                      className="text-lg px-4 py-1 border"
-                    >
-                      # {name || "preview"}
-                    </Badge>
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type="submit" className="w-full">Lưu Tag</Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
+                  <DialogFooter>
+                    <Button type="submit" className="w-full">Lưu Tag</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </div>
 
-      <div className="rounded-xl border bg-card shadow-sm overflow-hidden">
+      <div className="overflow-hidden rounded-[28px] border border-border/60 bg-card/75 shadow-[0_25px_60px_-30px_rgba(76,29,149,0.35)]">
         <Table>
-          <TableHeader className="bg-muted/50">
+          <TableHeader className="bg-muted/30">
             <TableRow>
               <TableHead className="w-[300px]">Tên thẻ</TableHead>
               <TableHead>Màu sắc</TableHead>
@@ -229,12 +233,12 @@ export default function TagsPage() {
             {isLoading ? (
               [1, 2, 3].map(i => (
                 <TableRow key={i}>
-                  <TableCell colSpan={4}><div className="h-10 w-full animate-pulse bg-muted rounded" /></TableCell>
+                  <TableCell colSpan={4}><div className="h-10 w-full animate-pulse rounded-md bg-muted" /></TableCell>
                 </TableRow>
               ))
             ) : filteredTags.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-12 text-muted-foreground">
+                <TableCell colSpan={4} className="py-12 text-center text-muted-foreground">
                   <div className="flex flex-col items-center gap-2">
                     <TagIcon className="h-8 w-8 opacity-20" />
                     <p>Không tìm thấy thẻ nào.</p>
@@ -243,13 +247,13 @@ export default function TagsPage() {
               </TableRow>
             ) : (
               filteredTags.map((tag) => (
-                <TableRow key={tag.id} className="group">
+                <TableRow key={tag.id} className="group transition-colors hover:bg-violet-500/5">
                   <TableCell>
-                    <Badge 
-                      variant="secondary" 
+                    <Badge
+                      variant="secondary"
                       className="px-3 py-1 font-medium"
-                      style={{ 
-                        backgroundColor: `${tag.color}15`, 
+                      style={{
+                        backgroundColor: `${tag.color}15`,
                         color: tag.color || undefined,
                         borderColor: tag.color || undefined
                       }}
@@ -259,15 +263,15 @@ export default function TagsPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                       <div className="h-4 w-4 rounded-full" style={{ backgroundColor: tag.color || '#ccc' }} />
-                       <span className="text-xs font-mono text-muted-foreground uppercase">{tag.color}</span>
+                      <div className="h-4 w-4 rounded-full" style={{ backgroundColor: tag.color || '#ccc' }} />
+                      <span className="text-xs font-mono uppercase text-muted-foreground">{tag.color}</span>
                     </div>
                   </TableCell>
                   <TableCell className="text-center font-semibold">
                     {tag._count?.transactions || 0}
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                       <Button variant="ghost" size="icon" onClick={() => handleOpenEdit(tag)}>
                         <Pencil className="h-4 w-4 text-muted-foreground hover:text-foreground" />
                       </Button>
@@ -275,7 +279,7 @@ export default function TagsPage() {
                         <AlertDialogTrigger render={<Button variant="ghost" size="icon" />}>
                           <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                         </AlertDialogTrigger>
-                        <AlertDialogContent className="glass-effect border-none">
+                        <AlertDialogContent className="border-none bg-card/90 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.45)] backdrop-blur-xl">
                           <AlertDialogHeader>
                             <AlertDialogTitle>Xác nhận xóa Tag?</AlertDialogTitle>
                             <AlertDialogDescription>
@@ -284,7 +288,7 @@ export default function TagsPage() {
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Hủy</AlertDialogCancel>
-                            <AlertDialogAction 
+                            <AlertDialogAction
                               onClick={() => handleDelete(tag.id)}
                               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                             >

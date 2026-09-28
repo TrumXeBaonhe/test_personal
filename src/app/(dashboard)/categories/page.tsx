@@ -244,105 +244,109 @@ export default function CategoriesPage() {
   return (
     <div className="space-y-8 pb-10">
       <FadeIn delay={0.1}>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight text-gradient">Danh mục phân loại</h2>
-            <p className="text-muted-foreground">Tổ chức các khoản chi tiêu và thu nhập của bạn</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="relative w-full md:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Tìm kiếm danh mục..." 
-                className="pl-9 bg-card/50 rounded-xl" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+        <div className="relative overflow-hidden rounded-[32px] border border-border/60 bg-gradient-to-br from-violet-600/10 via-background to-cyan-500/10 p-6 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.35)]">
+          <div className="absolute -right-8 -top-8 h-36 w-36 rounded-full bg-violet-500/20 blur-3xl" />
+          <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">Categories</p>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-gradient">Danh mục phân loại</h2>
+              <p className="mt-2 text-sm text-muted-foreground">Tổ chức các khoản chi tiêu và thu nhập của bạn</p>
             </div>
-            <Dialog open={isDialogOpen} onOpenChange={(open) => {
-              setIsDialogOpen(open);
-              if (!open) resetForm();
-            }}>
-              <DialogTrigger render={<Button className="rounded-full shadow-lg shadow-primary/10 hover:scale-105 transition-all px-6" />}>
-                <Plus className="mr-2 h-4 w-4" /> Thêm danh mục
-              </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] glass-effect border-none shadow-2xl">
-              <form onSubmit={handleSubmit}>
-                <DialogHeader>
-                  <DialogTitle>{editingCategory ? "Sửa danh mục" : "Tạo danh mục mới"}</DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-6 py-6">
-                  <div className="grid gap-2">
-                    <Label htmlFor="cat-name">Tên danh mục</Label>
-                    <Input 
-                      id="cat-name" 
-                      value={name} 
-                      onChange={(e) => setName(e.target.value)} 
-                      placeholder="VD: Ăn uống, Lương..." 
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label>Loại</Label>
-                    <Tabs value={type} onValueChange={(v) => setType(v as "INCOME" | "EXPENSE")} className="w-full">
-                      <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="EXPENSE">Chi tiêu</TabsTrigger>
-                        <TabsTrigger value="INCOME">Thu nhập</TabsTrigger>
-                      </TabsList>
-                    </Tabs>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label>Biểu tượng</Label>
-                    <div className="grid grid-cols-5 gap-2">
-                      {CATEGORY_ICONS.map((i) => (
-                        <Button
-                          key={i.name}
-                          type="button"
-                          variant={icon === i.name ? "default" : "outline"}
-                          size="icon"
-                          onClick={() => setIcon(i.name)}
-                          className="h-10 w-10 transition-all hover:scale-110"
-                        >
-                          <i.icon className="h-5 w-5" />
-                        </Button>
-                      ))}
+            <div className="flex items-center gap-3">
+              <div className="relative w-full md:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Tìm kiếm danh mục..."
+                  className="rounded-xl bg-card/70 pl-9"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <Dialog open={isDialogOpen} onOpenChange={(open) => {
+                setIsDialogOpen(open);
+                if (!open) resetForm();
+              }}>
+                <DialogTrigger render={<Button className="rounded-full px-6 shadow-lg shadow-violet-500/20" />}>
+                  <Plus className="mr-2 h-4 w-4" /> Thêm danh mục
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px] border-none bg-card/90 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.45)] backdrop-blur-xl">
+                  <form onSubmit={handleSubmit}>
+                    <DialogHeader>
+                      <DialogTitle>{editingCategory ? "Sửa danh mục" : "Tạo danh mục mới"}</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-6 py-6">
+                      <div className="grid gap-2">
+                        <Label htmlFor="cat-name">Tên danh mục</Label>
+                        <Input
+                          id="cat-name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="VD: Ăn uống, Lương..."
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label>Loại</Label>
+                        <Tabs value={type} onValueChange={(v) => setType(v as "INCOME" | "EXPENSE")} className="w-full">
+                          <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="EXPENSE">Chi tiêu</TabsTrigger>
+                            <TabsTrigger value="INCOME">Thu nhập</TabsTrigger>
+                          </TabsList>
+                        </Tabs>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label>Biểu tượng</Label>
+                        <div className="grid grid-cols-5 gap-2">
+                          {CATEGORY_ICONS.map((i) => (
+                            <Button
+                              key={i.name}
+                              type="button"
+                              variant={icon === i.name ? "default" : "outline"}
+                              size="icon"
+                              onClick={() => setIcon(i.name)}
+                              className="h-10 w-10 transition-all hover:scale-110"
+                            >
+                              <i.icon className="h-5 w-5" />
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label>Màu sắc thương hiệu</Label>
+                        <div className="flex flex-wrap gap-3">
+                          {PRESET_COLORS.map((c) => (
+                            <button
+                              key={c}
+                              type="button"
+                              className={`h-8 w-8 rounded-full border-2 transition-all hover:scale-125 ${color === c ? 'border-primary scale-110 shadow-md' : 'border-transparent'}`}
+                              style={{ backgroundColor: c }}
+                              onClick={() => setColor(c)}
+                            >
+                              {color === c && <Check className="h-4 w-4 mx-auto text-white drop-shadow-sm" />}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label>Màu sắc thương hiệu</Label>
-                    <div className="flex flex-wrap gap-3">
-                      {PRESET_COLORS.map((c) => (
-                        <button
-                          key={c}
-                          type="button"
-                          className={`h-8 w-8 rounded-full border-2 transition-all hover:scale-125 ${color === c ? 'border-primary scale-110 shadow-md' : 'border-transparent'}`}
-                          style={{ backgroundColor: c }}
-                          onClick={() => setColor(c)}
-                        >
-                          {color === c && <Check className="h-4 w-4 mx-auto text-white drop-shadow-sm" />}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type="submit" className="w-full">Lưu danh mục</Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
+                    <DialogFooter>
+                      <Button type="submit" className="w-full">Lưu danh mục</Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
         </div>
-      </div>
-    </FadeIn>
+      </FadeIn>
 
       <Tabs defaultValue="EXPENSE" className="w-full">
-        <TabsList className="bg-muted/50 border mb-6">
-          <TabsTrigger value="EXPENSE" className="px-8">Khoản chi tiêu</TabsTrigger>
-          <TabsTrigger value="INCOME" className="px-8">Khoản thu nhập</TabsTrigger>
+        <TabsList className="mb-6 grid w-full max-w-md grid-cols-2 rounded-full border bg-muted/50 p-1">
+          <TabsTrigger value="EXPENSE" className="rounded-full">Khoản chi tiêu</TabsTrigger>
+          <TabsTrigger value="INCOME" className="rounded-full">Khoản thu nhập</TabsTrigger>
         </TabsList>
-        
+
         {isLoading ? (
           <div className="space-y-4">
-            {[1, 2, 3].map(i => <div key={i} className="h-12 w-full animate-pulse bg-muted rounded-md" />)}
+            {[1, 2, 3].map(i => <div key={i} className="h-12 w-full animate-pulse rounded-xl bg-muted" />)}
           </div>
         ) : (
           <>

@@ -80,8 +80,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-4">
+      <div className="absolute -left-16 top-10 h-64 w-64 rounded-full bg-violet-500/15 blur-3xl" />
+      <div className="absolute bottom-10 right-0 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl" />
+      <Card className="relative z-10 w-full max-w-md border-border/60 bg-card/80 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.45)]">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Tạo tài khoản</CardTitle>
           <CardDescription className="text-center">
