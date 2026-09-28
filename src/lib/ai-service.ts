@@ -124,7 +124,7 @@ HƯỚNG DẪN:
  * Gọi Groq API
  */
 export function getGroqModel() {
-  return process.env.GROQ_MODEL || "llama-3.1-8b-instant";
+  return process.env.GROQ_MODEL || "openai/gpt-oss-20b";
 }
 
 export async function callGroq(messages: { role: string; content: string }[]) {
