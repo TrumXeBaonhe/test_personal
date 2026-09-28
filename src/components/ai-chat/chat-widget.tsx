@@ -288,7 +288,7 @@ export function ChatWidget() {
                   </button>
                 </div>
                 <p className="text-center text-[9px] text-muted-foreground/50 mt-1.5 font-medium">
-                  Powered by Groq · Llama 3.3 70B
+                  Powered by Groq AI
                 </p>
               </div>
             </div>

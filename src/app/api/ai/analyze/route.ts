@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import Groq from "groq-sdk";
 import { subDays, startOfDay } from "date-fns";
 import { NextResponse } from "next/server";
-import { isGroqAuthError } from "@/lib/ai-service";
+import { getGroqModel, isGroqAuthError } from "@/lib/ai-service";
 
 export async function GET() {
   const session = await auth();
@@ -61,7 +61,7 @@ export async function GET() {
       });
     }
 
-    // 4. Gọi Groq AI (Llama 3.3 70B)
+    // 4. Gọi Groq AI với model được cấu hình qua env.
     const groq = new Groq({ apiKey });
 
     const chatCompletion = await groq.chat.completions.create({
@@ -79,7 +79,7 @@ ${dataString}
 Dựa trên dữ liệu này, hãy đưa ra đúng 3 lời khuyên tài chính. Mỗi lời khuyên không quá 25 từ. Tập trung vào tiết kiệm và tối ưu hóa dựa trên các danh mục chi tiêu nhiều nhất. Trả về danh sách 3 dòng văn bản, không có số thứ tự, không có tiêu đề.`,
         },
       ],
-      model: "llama-3.3-70b-versatile",
+      model: getGroqModel(),
       temperature: 0.7,
       max_tokens: 300,
     });
