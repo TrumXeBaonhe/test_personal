@@ -191,6 +191,23 @@ export default function LoginPage() {
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden p-4">
       <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-violet-500/15 blur-3xl" />
       <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl" />
+
+      <div className="absolute inset-x-0 top-8 z-10 flex justify-center">
+        <div className="flex items-center gap-3 rounded-full border border-border/60 bg-card/70 px-4 py-2 shadow-[0_22px_50px_-24px_rgba(20,30,60,0.55)] backdrop-blur-xl">
+          <svg className="h-9 w-9" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="SpendWise logo icon">
+            <path d="M56 5.5L98.8 30.25V81.75L56 106.5L13.2 81.75V30.25L56 5.5Z" fill="#0B2341" />
+            <path d="M29 38.25L48.25 27.25L65 36.9L47.75 46.9L61.7 54.95L78.75 45.1V63.65L61.7 73.5L47.75 65.45L29 76.3V57.7L42.25 50.05L29 42.4V38.25Z" fill="#0D8B8A" />
+            <path d="M61.7 73.5L78.75 63.65V75.15L61.7 85L47.75 76.95V65.45L61.7 73.5Z" fill="#76C893" />
+          </svg>
+          <div className="text-left leading-none">
+            <div className="text-2xl font-black tracking-[-0.06em]">
+              <span className="text-slate-900 dark:text-slate-100">Spend</span>
+              <span className="text-[#0D8B8A]">Wise</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <Card className="relative z-10 w-full max-w-md overflow-hidden border-border/60 bg-card/80 shadow-[0_30px_80px_-32px_rgba(76,29,149,0.45)]">
         <AnimatePresence mode="wait">
 

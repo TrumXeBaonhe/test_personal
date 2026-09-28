@@ -39,8 +39,8 @@ export function Sidebar() {
       <div className="h-full overflow-auto px-4 py-6 pr-3 lg:py-8">
         <div className="rounded-[28px] border border-border/60 bg-card/65 p-3 shadow-[0_18px_50px_-24px_rgba(76,29,149,0.3)] backdrop-blur-xl">
           <div className="mb-4 px-3 pt-2">
-            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">Workspace</p>
-            <h2 className="mt-2 text-lg font-bold text-foreground">Bảng điều khiển</h2>
+            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-muted-foreground">Menu chính</p>
+            <h2 className="mt-2 text-lg font-bold text-foreground">Tổng quan</h2>
           </div>
 
           <nav className="space-y-1.5">

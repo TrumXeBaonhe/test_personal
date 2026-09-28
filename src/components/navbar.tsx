@@ -39,13 +39,20 @@ export function Navbar() {
             <Link href="/" className="flex items-center gap-3 group">
               <motion.div
                 whileHover={{ scale: 1.08, rotate: 12 }}
-                className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 via-indigo-600 to-cyan-500 text-sm font-black text-white shadow-lg shadow-violet-500/20"
+                className="relative flex h-11 w-11 items-center justify-center"
               >
-                $$
+                <svg className="h-11 w-11" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="SpendWise logo icon">
+                  <path d="M56 5.5L98.8 30.25V81.75L56 106.5L13.2 81.75V30.25L56 5.5Z" fill="#0B2341" />
+                  <path d="M29 38.25L48.25 27.25L65 36.9L47.75 46.9L61.7 54.95L78.75 45.1V63.65L61.7 73.5L47.75 65.45L29 76.3V57.7L42.25 50.05L29 42.4V38.25Z" fill="#0D8B8A" />
+                  <path d="M61.7 73.5L78.75 63.65V75.15L61.7 85L47.75 76.95V65.45L61.7 73.5Z" fill="#76C893" />
+                </svg>
               </motion.div>
               <div className="flex flex-col leading-none">
-                <span className="hidden text-lg font-black tracking-tight text-foreground md:block">SpendWise</span>
-                <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Finance OS</span>
+                <span className="hidden text-[2rem] font-black tracking-[-0.06em] md:block">
+                  <span className="text-slate-900 dark:text-slate-100">Spend</span>
+                  <span className="text-[#0D8B8A]">Wise</span>
+                </span>
+                <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Finance OS</span>
               </div>
             </Link>
           </div>
@@ -102,7 +109,17 @@ export function Navbar() {
             className="fixed inset-y-0 left-0 z-50 flex h-full w-72 flex-col border-r border-border bg-card/95 py-6 shadow-2xl backdrop-blur-xl md:hidden"
           >
             <div className="mb-6 flex items-center justify-between px-6">
-              <span className="text-xl font-black text-primary">SpendWise</span>
+              <div className="flex items-center gap-2.5">
+                <svg className="h-8 w-8" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="SpendWise logo icon">
+                  <path d="M56 5.5L98.8 30.25V81.75L56 106.5L13.2 81.75V30.25L56 5.5Z" fill="#0B2341" />
+                  <path d="M29 38.25L48.25 27.25L65 36.9L47.75 46.9L61.7 54.95L78.75 45.1V63.65L61.7 73.5L47.75 65.45L29 76.3V57.7L42.25 50.05L29 42.4V38.25Z" fill="#0D8B8A" />
+                  <path d="M61.7 73.5L78.75 63.65V75.15L61.7 85L47.75 76.95V65.45L61.7 73.5Z" fill="#76C893" />
+                </svg>
+                <span className="text-lg font-black tracking-[-0.06em]">
+                  <span className="text-slate-900 dark:text-slate-100">Spend</span>
+                  <span className="text-[#0D8B8A]">Wise</span>
+                </span>
+              </div>
               <button
                 className="rounded-full p-2 hover:bg-accent"
                 onClick={() => setIsOpen(false)}
