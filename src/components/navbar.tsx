@@ -27,48 +27,51 @@ export function Navbar() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/75 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
-        <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 md:px-8">
+        <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-3">
             <button
-              className="rounded-xl border border-border bg-card/80 p-2.5 text-foreground shadow-sm transition hover:bg-accent md:hidden"
+              className="rounded-xl border border-border bg-card/80 p-2 text-foreground shadow-sm transition hover:bg-accent md:hidden"
               onClick={() => setIsOpen(!isOpen)}
             >
-              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
 
-            <Link href="/" className="flex items-center gap-3 group">
+            <Link href="/" className="flex items-center gap-2.5 group" aria-label="SpendWise home">
               <motion.div
                 whileHover={{ scale: 1.08, rotate: 12 }}
-                className="relative flex h-11 w-11 items-center justify-center"
+                className="relative flex h-9 w-9 items-center justify-center"
               >
-                <svg className="h-11 w-11" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="SpendWise logo icon">
+                <svg className="h-9 w-9" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="SpendWise logo icon">
                   <path d="M56 5.5L98.8 30.25V81.75L56 106.5L13.2 81.75V30.25L56 5.5Z" fill="#0B2341" />
                   <path d="M29 38.25L48.25 27.25L65 36.9L47.75 46.9L61.7 54.95L78.75 45.1V63.65L61.7 73.5L47.75 65.45L29 76.3V57.7L42.25 50.05L29 42.4V38.25Z" fill="#0D8B8A" />
                   <path d="M61.7 73.5L78.75 63.65V75.15L61.7 85L47.75 76.95V65.45L61.7 73.5Z" fill="#76C893" />
                 </svg>
               </motion.div>
-              <div className="flex flex-col leading-none">
-                <span className="hidden text-[2rem] font-black tracking-[-0.06em] md:block">
+
+              <div className="flex items-end gap-2 leading-none">
+                <span className="text-lg font-black tracking-[-0.06em] md:text-xl">
                   <span className="text-slate-900 dark:text-slate-100">Spend</span>
                   <span className="text-[#0D8B8A]">Wise</span>
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Finance OS</span>
+                <span className="hidden text-[9px] font-semibold uppercase tracking-[0.2em] text-muted-foreground md:inline-block">
+                  Finance OS
+                </span>
               </div>
             </Link>
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
-            <nav className="hidden items-center gap-2 rounded-full border border-border bg-card/70 p-1.5 shadow-sm md:flex">
-              {menuItems.slice(0, 5).map((item) => {
+            <div className="hidden items-center gap-1 rounded-full border border-border/70 bg-card/80 p-1 md:flex">
+              {menuItems.slice(0, 3).map((item) => {
                 const active = pathname === item.href;
 
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`rounded-full px-3.5 py-2 text-sm font-medium transition ${
+                    className={`rounded-full px-2.5 py-1.5 text-xs font-medium transition ${
                       active
-                        ? 'bg-primary text-primary-foreground shadow-lg shadow-violet-500/20'
+                        ? 'bg-primary text-primary-foreground shadow-sm'
                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                     }`}
                   >
@@ -76,9 +79,9 @@ export function Navbar() {
                   </Link>
                 );
               })}
-            </nav>
+            </div>
 
-            <div className="flex items-center gap-2 md:gap-3">
+            <div className="flex items-center gap-2 md:gap-2.5">
               <NotificationBell />
               <ModeToggle />
               <UserNav />
